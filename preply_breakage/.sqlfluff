@@ -1,0 +1,24 @@
+[sqlfluff]
+templater = dbt
+dialect = duckdb
+sql_file_exts = .sql
+
+[sqlfluff:templater:dbt]
+project_dir = ./
+profiles_dir = ./
+
+[sqlfluff:indentation]
+indent_unit = space
+tab_space_size = 4
+indented_joins = false
+indented_using_on = true
+
+[sqlfluff:layout:type:comma]
+# leading commas: the comma goes before the column, not at the end of the previous line
+line_position = leading
+
+[sqlfluff:rules:capitalisation.keywords]
+capitalisation_policy = lower
+
+[sqlfluff:rules:capitalisation.identifiers]
+extended_capitalisation_policy = lower

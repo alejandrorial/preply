@@ -1,0 +1,142 @@
+version: 2
+
+sources:
+  - name: preply_raw
+    description: >
+      Raw tables for the case study. Loaded locally with `dbt seed` from the
+      CSVs in seeds/, standing in for a real ingestion pipeline (Fivetran or
+      similar) — the rest of the project treats them as external sources,
+      not as seeds, so moving to a real warehouse only means changing this
+      file.
+    schema: main  # default schema of the `dev` target in profiles.yml
+    tables:
+      - name: raw_payments
+        description: One subscription payment = one 28-day cycle.
+        columns:
+          - name: payment_id
+            # Grain-breaking if this fails — keep at error (the default).
+            data_tests: [unique, not_null]
+          - name: student_id
+            data_tests:
+              - not_null:
+                  config:
+                    severity: warn
+
+      - name: raw_lessons
+        description: >
+          One booked lesson. No direct FK to payment_id — mapping it to a
+          cycle by date is the intermediate layer's job.
+        columns:
+          - name: lesson_id
+            data_tests: [unique, not_null]
+          - name: student_id
+            data_tests:
+              - not_null:
+                  config:
+                    severity: warn
+
+      - name: raw_students
+        description: Student metadata.
+        columns:
+          - name: student_id
+            data_tests: [unique, not_null]
+
+models:
+  - name: stg_payments
+    description: >
+      One subscription payment, transformed no further than type casting and
+      renaming ambiguous columns. Grain: one row per payment. No cycle logic
+      yet — that lives in the intermediate layer.
+    columns:
+      - name: payment_id
+        description: Primary key of the payment.
+        # Grain-breaking if this fails — keep at error (the default), so
+        # nothing gets built on top of a table with a broken/duplicated key.
+        data_tests: [unique, not_null]
+      - name: student_id
+        description: Student who made the payment.
+        data_tests:
+          - not_null:
+              config:
+                severity: warn
+          - relationships:
+              config:
+                severity: warn
+              arguments:
+                to: ref('stg_students')
+                field: student_id
+      - name: payment_at
+        description: Instant of the payment. Also the exact start of its 28-day cycle.
+        data_tests:
+          - not_null:
+              config:
+                severity: warn
+      - name: plan_hours
+        description: Hours included in the plan purchased in this payment.
+        data_tests:
+          - not_null:
+              config:
+                severity: warn
+          - accepted_values:
+              config:
+                severity: warn
+              arguments:
+                # Plan sizes observed in the case study (4-20h). If Preply ships
+                # a new size, this test flags it instead of letting it pass
+                # silently until it breaks the intermediate layer's segmentation.
+                values: [4, 6, 8, 10, 12, 16, 20]
+      - name: price_per_hour_usd
+        description: Price per hour for this plan, in USD.
+        data_tests:
+          - not_null:
+              config:
+                severity: warn
+
+  - name: stg_lessons
+    description: >
+      One booked lesson. Grain: one row per lesson. No FK to payment_id in
+      the source — mapping each lesson to its cycle (a range-join on booking
+      date) is intermediate-layer work, not staging.
+    columns:
+      - name: lesson_id
+        description: Primary key of the booked lesson.
+        # Grain-breaking if this fails — keep at error (the default).
+        data_tests: [unique, not_null]
+      - name: student_id
+        description: Student who booked the lesson.
+        data_tests:
+          - not_null:
+              config:
+                severity: warn
+          - relationships:
+              config:
+                severity: warn
+              arguments:
+                to: ref('stg_students')
+                field: student_id
+      - name: booked_at
+        description: Instant the booking was made (not the lesson time itself).
+        data_tests:
+          - not_null:
+              config:
+                severity: warn
+      - name: hours_booked
+        description: Hours booked in this lesson (observed in 0.5h increments).
+        data_tests:
+          - not_null:
+              config:
+                severity: warn
+
+  - name: stg_students
+    description: "Student metadata. Grain: one row per student."
+    columns:
+      - name: student_id
+        description: Primary key of the student.
+        # Grain-breaking if this fails — keep at error (the default).
+        data_tests: [unique, not_null]
+      - name: joined_at
+        description: Student's signup date (may not match their first payment).
+        data_tests:
+          - not_null:
+              config:
+                severity: warn

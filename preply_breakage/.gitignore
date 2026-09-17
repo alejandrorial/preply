@@ -1,0 +1,9 @@
+# dbt build artifacts — reproducible with `dbt seed && dbt run`, not committed
+target/
+dbt_packages/
+logs/
+.user.yml
+
+# local database — regenerable, and a binary adds nothing to the diff
+*.duckdb
+*.duckdb.wal

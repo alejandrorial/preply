@@ -1,0 +1,40 @@
+name: 'preply_breakage'
+version: '1.0.0'
+config-version: 2
+
+profile: 'preply_breakage'
+
+model-paths: ["models"]
+seed-paths: ["seeds"]
+test-paths: ["tests"]
+macro-paths: ["macros"]
+analysis-paths: ["analyses"]
+
+clean-targets:
+  - "target"
+  - "dbt_packages"
+
+vars:
+  # Point in time the project treats as "today". null => uses current_date
+  # (production behavior). Pass it explicitly to reproduce the case study
+  # with the dataset's frozen AS_OF_DATE, or for backfills/debugging:
+  #   dbt run --vars '{as_of_date: 2026-04-17}'
+  as_of_date: null
+
+  # Lookback window for the per-segment booking curves. null => uses the
+  # full history of closed cycles (current decision). An integer number of
+  # months would bound the window if it's ever needed (product drift,
+  # seasonality, ...).
+  curve_lookback_months: null
+
+models:
+  preply_breakage:
+    staging:
+      +materialized: view
+      +schema: stg_preply
+    intermediate:
+      +materialized: view
+      +schema: working_preply
+    marts:
+      +materialized: table
+      +schema: marts_preply
