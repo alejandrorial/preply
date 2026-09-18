@@ -11,8 +11,10 @@ actual once it closes. Built for Preply's Analytics Engineer case study.
   at the repo root. A standalone file: open it in a browser, no server or
   build step. It is built from this project's `mart_breakage_daily`, with
   the data as of 2026-04-17 baked in.
-- **Written summary + AI usage note** — a short slide deck, submitted
-  alongside this repo.
+- **Written summary + AI usage note** —
+  [`../case_summary_slides.html`](../case_summary_slides.html), a 13-slide
+  deck covering the approach, the data model, assumptions, caveats, what
+  I'd do next, and how I used AI. Also a standalone file.
 
 ## Requirements
 

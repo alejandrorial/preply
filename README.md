@@ -8,13 +8,16 @@ take-home case study.
 **Start here → [`dbt/README.md`](dbt/README.md)**
 for how to run the project and a description of the data model.
 
-The dashboard mockup is [`breakage_dashboard.html`](breakage_dashboard.html)
-— a standalone file, open it in any browser. The written summary and AI
-usage note are a short slide deck, submitted alongside this repo.
+The other two deliverables are standalone HTML files — open either in any
+browser, no server or build step:
+[`breakage_dashboard.html`](breakage_dashboard.html) (the PayOps dashboard
+mockup) and [`case_summary_slides.html`](case_summary_slides.html) (the
+written summary and AI usage note).
 
 ## Repo layout
 
 ```
 dbt/                       the dbt project — staging, intermediate, marts, tests
 breakage_dashboard.html    the PayOps dashboard mockup, built on the mart
+case_summary_slides.html   written summary + AI usage note, as slides
 ```
