@@ -1,11 +1,14 @@
-{% macro as_of_date() %}
+{%- macro as_of_date() -%}
 {#
     Point in time the project treats as "today".
     - No override: current_date (normal production behavior, one run per day).
     - With `--vars '{as_of_date: 2026-04-17}'`: pins that date, to reproduce
       the case study with the dataset's frozen AS_OF_DATE, or for
       backfills/debugging.
-    Centralized here so the literal isn't repeated in every model.
+    Centralized here so the literal isn't repeated in every model. Every
+    Jinja tag here is whitespace-trimmed on purpose (`{%-`/`-%}`) so this
+    always renders as a single bare token, safe to drop into the middle of
+    an expression or a comment without stray newlines breaking either.
 #}
 {%- set override = var('as_of_date', none) -%}
 {%- if override -%}
@@ -13,4 +16,4 @@
 {%- else -%}
     current_date
 {%- endif -%}
-{% endmacro %}
+{%- endmacro -%}

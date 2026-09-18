@@ -7,3 +7,4 @@ logs/
 # local database — regenerable, and a binary adds nothing to the diff
 *.duckdb
 *.duckdb.wal
+dbt_internal_packages/

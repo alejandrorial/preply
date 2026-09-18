@@ -2,6 +2,10 @@
 templater = dbt
 dialect = duckdb
 sql_file_exts = .sql
+# LT08 wants a blank line after every CTE's closing bracket. We deliberately
+# keep the closing `)` and the next `, cte_name as (` on adjacent lines with
+# no blank line, so a trailing comment has a natural place to sit.
+exclude_rules = LT08
 
 [sqlfluff:templater:dbt]
 project_dir = ./

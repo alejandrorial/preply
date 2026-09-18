@@ -1,9 +1,15 @@
 with source as (
 
-    select * from {{ source('preply_raw', 'raw_payments') }}
+    select
+        payment_id
+        , student_id
+        , payment_ts
+        , hours
+        , price_per_hour_usd
+
+    from {{ source('preply_raw', 'raw_payments') }}
 
 )
-
 , renamed as (
 
     select

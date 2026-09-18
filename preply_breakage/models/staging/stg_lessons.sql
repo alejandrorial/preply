@@ -1,9 +1,14 @@
 with source as (
 
-    select * from {{ source('preply_raw', 'raw_lessons') }}
+    select
+        lesson_id
+        , student_id
+        , booking_ts
+        , hours_booked
+
+    from {{ source('preply_raw', 'raw_lessons') }}
 
 )
-
 , renamed as (
 
     select

@@ -27,6 +27,12 @@ vars:
   # seasonality, ...).
   curve_lookback_months: null
 
+  # Subscription cycle length in days. The one number every cycle/breakage
+  # calculation is built on — changing it here is what it'd take to model
+  # a 30-day cycle instead of 28 (see the README caveat on what a real
+  # length change would still require beyond this).
+  cycle_length_days: 28
+
 models:
   preply_breakage:
     staging:
