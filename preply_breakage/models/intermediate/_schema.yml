@@ -3,10 +3,12 @@ version: 2
 models:
   - name: int_payment_cycles
     description: >
-      Turns each payment into an explicit 28-day cycle window. Single
-      source of truth for cycle boundaries — every other intermediate model
-      depends on this one instead of recomputing cycle_start/cycle_end.
-      Grain: one row per payment.
+      Turns each payment into its 28-day billing cycle: when it started,
+      when it closes, and whether that close has already happened. This is
+      the line between a payment whose breakage is a known, booked number
+      and one that's still just today's best guess — every other model in
+      this project relies on this one instead of recomputing cycle
+      boundaries itself. Grain: one row per payment.
     columns:
       - name: payment_id
         description: Primary key. Grain-breaking if not unique — keep at error.
@@ -31,22 +33,31 @@ models:
           int_cycle_daily_progress need "which calendar day did this cycle
           start" and shouldn't each re-derive cycle_start::date.
       - name: cycle_end_exclusive
-        description: cycle_start + 28 days. Exclusive — a booking exactly at this instant belongs to the next cycle.
+        description: >
+          The date this plan's hours expire and any still unbooked become
+          breakage revenue. cycle_start + 28 days, exclusive — a booking at
+          this exact instant belongs to the next cycle, not this one.
       - name: cycle_number
         description: 1 for a student's first payment, 2+ for renewals.
       - name: is_renewal
-        description: "cycle_number > 1."
+        description: >
+          cycle_number > 1. Lets the business see whether breakage looks
+          different for someone still deciding if Preply is right for them
+          (their first payment) versus an established, recurring student.
       - name: is_closed
         description: >
-          Whether cycle_end_exclusive has passed as of as_of_date() (compared
-          as dates — see the model's inline comment on why).
+          True once this cycle's closing date has passed — the point at
+          which its breakage stops being a daily estimate and becomes a
+          real, final number (compared as whole calendar days, matching how
+          the business thinks about "today", not exact timestamps).
 
   - name: int_lesson_cycles
     description: >
-      Maps each lesson to the one cycle it was booked into, via a range-join
-      on booking date. This is the model that answers "how do bookings map
-      to cycles" — nothing downstream re-derives that mapping.
-      Grain: one row per lesson.
+      Assigns every booked lesson to the one billing cycle it was booked
+      into. Preply's raw data never says which cycle a lesson belongs to —
+      this is the one place that gets decided, via a range-join on booking
+      date, so nothing downstream has to re-derive it and risk getting it
+      wrong twice. Grain: one row per lesson.
     columns:
       - name: lesson_id
         description: >
@@ -58,10 +69,11 @@ models:
         data_tests: [unique, not_null]
       - name: payment_id
         description: >
-          Null means the lesson matched no cycle at all (an orphan booking).
-          Contained to that one row rather than breaking the model's grain,
-          so warn rather than error — but a silent orphan still means that
-          lesson's hours never reach any downstream cycle total.
+          Null means this lesson didn't fall inside any known cycle for
+          that student — an orphaned booking. Contained to that one row
+          rather than breaking the model's grain, so warn rather than
+          error — but a silent orphan still means those hours are invisible
+          to every downstream revenue number, not just flagged here.
         data_tests:
           - not_null:
               config:
@@ -74,10 +86,13 @@ models:
 
   - name: int_cycle_daily_progress
     description: >
-      For every open or closed payment, how many hours it had booked as of
-      each day of its cycle — one row per calendar day, not only days with
-      activity. Recomputed from full booking history, not stored state.
-      Grain: one row per payment x snapshot_date.
+      For every payment, how much of its plan had been used as of any given
+      day of its cycle — one row per calendar day, not only days with
+      activity. This is the daily heartbeat that lets PayOps see today's
+      number instead of waiting up to 28 days for each cycle to close.
+      Recomputed from full booking history, not stored state, so it can
+      never drift out of sync with what actually happened. Grain: one row
+      per payment x snapshot_date.
     columns:
       - name: payment_snapshot_key
         description: "Surrogate key: payment_id || snapshot_date. Grain-breaking if not unique — keep at error."
@@ -89,17 +104,22 @@ models:
 
   - name: int_segment_burn_curves
     description: >
-      For each (plan_hours, is_renewal) segment and each day of the cycle,
-      the average share of the plan already booked by that day — computed
-      only from closed cycles. The "prior" the estimation method blends
-      with a still-open payment's own actual progress.
-      Grain: one row per segment x day_in_cycle.
+      The historical benchmark the forecast is built on: for students with
+      a plan this size who are new vs. renewing, how much of their plan had
+      typically been used by this point in the cycle — based only on
+      cycles that have already finished. This is what lets the model say
+      something useful about a payment that hasn't finished yet, instead of
+      just describing the past. Grain: one row per segment x day_in_cycle.
     columns:
       - name: segment_day_key
         description: "Surrogate key: plan_hours || is_renewal || day_in_cycle. Grain-breaking if not unique — keep at error."
         data_tests: [unique, not_null]
       - name: n_closed_cycles
-        description: Sample size behind avg_pct_booked for this segment/day. See the open question on the fallback threshold.
+        description: >
+          How much history backs this benchmark for this segment and day.
+          Too little, and the estimate falls back to a payment's own pace
+          instead of trusting a thin average — see the written summary for
+          how that cutoff was chosen and tested.
       - name: avg_pct_booked
         description: >
           Population average across n_closed_cycles payments, not a typical

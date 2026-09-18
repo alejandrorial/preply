@@ -11,7 +11,13 @@ sources:
     schema: main  # default schema of the `dev` target in profiles.yml
     tables:
       - name: raw_payments
-        description: One subscription payment = one 28-day cycle.
+        description: >
+          One subscription payment. Each payment opens a 28-day billing
+          cycle, and that cycle is where Preply's revenue on it ultimately
+          comes from: a 20% commission on every hour the student actually
+          books, and 100% of the value of any hour still unbooked when the
+          cycle closes (breakage). Estimating that second number before the
+          cycle ends is what this whole project is for.
         columns:
           - name: payment_id
             # Grain-breaking if this fails — keep at error (the default).
@@ -24,8 +30,11 @@ sources:
 
       - name: raw_lessons
         description: >
-          One booked lesson. No direct FK to payment_id — mapping it to a
-          cycle by date is the intermediate layer's job.
+          One lesson a student has booked. Booking a lesson is the only
+          thing that turns a plan's hours from "might expire as breakage"
+          into "commission revenue" — no direct link to payment_id here;
+          working out which cycle a booking belongs to is the intermediate
+          layer's job.
         columns:
           - name: lesson_id
             data_tests: [unique, not_null]
@@ -36,7 +45,11 @@ sources:
                     severity: warn
 
       - name: raw_students
-        description: Student metadata.
+        description: >
+          Student metadata — country, acquisition channel, learning goal,
+          subject. Lets the business see whether breakage is spread evenly
+          across the whole base or concentrated in a particular kind of
+          student, instead of just reporting one company-wide rate.
         columns:
           - name: student_id
             data_tests: [unique, not_null]
@@ -44,9 +57,10 @@ sources:
 models:
   - name: stg_payments
     description: >
-      One subscription payment, transformed no further than type casting and
-      renaming ambiguous columns. Grain: one row per payment. No cycle logic
-      yet — that lives in the intermediate layer.
+      One subscription payment, cleaned up for downstream use: type-safe
+      columns with unambiguous names, no business logic yet. Every dollar of
+      commission and breakage this project ever reports traces back to a
+      row here. Grain: one row per payment.
     columns:
       - name: payment_id
         description: Primary key of the payment.
@@ -94,9 +108,11 @@ models:
 
   - name: stg_lessons
     description: >
-      One booked lesson. Grain: one row per lesson. No FK to payment_id in
-      the source — mapping each lesson to its cycle (a range-join on booking
-      date) is intermediate-layer work, not staging.
+      One booked lesson, cleaned up for downstream use — the raw signal
+      that a plan's hours are being used rather than left to expire.
+      No FK to payment_id in the source; mapping each lesson to its cycle
+      (a range-join on booking date) is intermediate-layer work, not
+      staging. Grain: one row per lesson.
     columns:
       - name: lesson_id
         description: Primary key of the booked lesson.
@@ -128,7 +144,11 @@ models:
                 severity: warn
 
   - name: stg_students
-    description: "Student metadata. Grain: one row per student."
+    description: >
+      One row per student, cleaned up for downstream use — the dimensions
+      (country, acquisition channel, persona, first subject) that let the
+      business see if breakage is a company-wide rate or concentrated in
+      specific segments. Grain: one row per student.
     columns:
       - name: student_id
         description: Primary key of the student.

@@ -3,25 +3,25 @@ version: 2
 models:
   - name: mart_breakage_daily
     description: >
-      For every payment and every day of its cycle, the resulting
-      breakage: the known actual figure once the cycle has closed, or the
-      best current estimate while it's still open — plus both individual
-      estimation methods (so the estimate can be backtested against the
-      actual once a cycle closes) and student dimensions, so the
-      dashboard can filter/group by country, channel, and persona without
-      an extra join.
-      Grain: one row per payment x snapshot_date.
+      The number PayOps opens every morning: for every payment and every
+      day of its cycle, what breakage it produced — the real, closed-book
+      figure once the cycle has ended, or today's best estimate while it's
+      still running. Built once, with both competing estimates and the
+      student's dimensions already attached, so the dashboard (or any other
+      report) never has to re-derive actual vs. estimated, or re-join
+      student data, itself. Grain: one row per payment x snapshot_date.
     columns:
       - name: payment_snapshot_key
         description: "Surrogate key: payment_id || snapshot_date. Grain-breaking if not unique — keep at error."
         data_tests: [unique, not_null]
       - name: method_used
         description: >
-          Which estimate breakage_usd falls back to while a payment is
-          still open: 'segment' when its (plan_hours, is_renewal) burn
-          curve has at least 20 historical closed cycles behind it,
-          'linear' otherwise. Irrelevant once a cycle is closed —
-          breakage_usd then uses the known actual figure regardless.
+          Which estimate breakage_usd trusts while a payment is still open:
+          the historical segment benchmark once enough similar cycles have
+          closed to trust it ('segment', at least 20), otherwise a simpler
+          estimate based on this payment's own pace so far ('linear').
+          Meaningless once a cycle is closed — breakage_usd is the real,
+          known figure by then, not a guess.
         data_tests:
           - accepted_values:
               config:
@@ -30,53 +30,58 @@ models:
                 values: ['linear', 'segment']
       - name: actual_breakage_usd
         description: >
-          Known only once the cycle has closed (is_closed) — null while
-          open. plan_hours minus hours actually booked over the full
-          cycle, at full price: Preply keeps 100% of unbooked hours'
-          value, vs. 20% commission on hours that were booked.
+          The final, undisputed breakage figure once a cycle has closed —
+          the value of every plan hour the student never used, at full
+          price. Null while the cycle is still open, because it genuinely
+          isn't known yet: plan_hours minus hours actually booked over the
+          full cycle. Preply keeps 100% of that value, versus 20% commission
+          on hours that were booked.
       - name: estimated_breakage_linear_usd
         description: >
-          Method A: this payment's own booking rate through day_in_cycle,
+          One of two competing guesses for a payment that hasn't closed
+          yet: this payment's own booking rate through day_in_cycle,
           extrapolated linearly to a full cycle (cycle_length_days var,
-          28 by default). Computed for every row, including closed
-          cycles' historical days, specifically so it can be backtested
-          against actual_breakage_usd once known.
+          28 by default). Computed for every row, including closed cycles'
+          historical days, specifically so it can be checked against
+          actual_breakage_usd once known — that comparison is what decides
+          which method the business should trust.
       - name: estimated_breakage_segment_usd
         description: >
-          Method B: this payment's actual progress plus how much more its
-          (plan_hours, is_renewal) segment typically booked between today
-          and the end of the cycle, per int_segment_burn_curves. Null when
-          the segment has no closed-cycle history at all.
+          The other competing guess: this payment's actual progress so
+          far, plus how much more students in its (plan_hours, is_renewal)
+          segment typically book between now and the end of the cycle, per
+          int_segment_burn_curves. Null when that segment has no
+          closed-cycle history at all to learn from.
       - name: breakage_usd
         description: >
-          The headline figure: actual_breakage_usd when known, otherwise
-          whichever estimate method_used points to. What the dashboard
-          sums — not a new calculation, just the resolved choice between
-          the columns above.
+          The number to actually use, and what the dashboard sums: the real
+          figure once known, otherwise whichever of the two estimates the
+          business has decided to trust more (method_used). Nobody reading
+          this mart needs to know which estimate column is "the good one"
+          for a given row — this column already made that call.
       - name: commission_revenue_usd
-        description: 20% of the value of hours booked so far — Preply's cut when a lesson happens, vs. 100% of the value when it doesn't.
+        description: >
+          Preply's other, steadier source of revenue on this payment: 20%
+          of what the student has actually used, recognized as it happens
+          rather than waiting for the cycle to close. Unlike breakage, this
+          money is never in question — a useful floor to compare breakage
+          against.
       - name: country_code
         description: >
-          Null when the payment's student_id has no match in
-          stg_students (see the warn-severity relationships test
-          upstream) — left join on purpose, so an orphaned student
-          doesn't silently drop that payment's revenue from the mart.
-      - name: first_subject
-        description: >
-          The language the student is learning. Not used as a
-          burn-curve segmentation axis (only plan_hours x is_renewal
-          showed real signal there) — exposed here purely as a
-          dashboard filter/group-by dimension, same role as
-          country_code, since the case study lists it as available
-          student metadata.
+          Where this payment's student is based, for spotting whether
+          breakage is a global rate or concentrated in specific markets.
+          Null when the payment's student_id has no match in stg_students
+          (see the warn-severity relationships test upstream) — left join
+          on purpose, so an orphaned student doesn't silently drop that
+          payment's revenue from the mart.
       - name: is_current_snapshot
         description: >
           True on exactly one row per payment: its final-day row if
-          closed, today's row if still open. The dashboard's headline "breakage
-          right now" totals should filter on this — not on snapshot_date
-          = as_of_date(), which only catches payments whose cycle happens
-          to still span today and would silently exclude almost every
-          closed payment. See assert_one_current_snapshot_per_payment.
+          closed, today's row if still open. Any "breakage right now"
+          total on the dashboard should filter on this — not on
+          snapshot_date = as_of_date(), which only catches payments whose
+          cycle happens to still span today and would silently exclude
+          almost every closed payment. See assert_one_current_snapshot_per_payment.
         data_tests:
           - not_null:
               config:

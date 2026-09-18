@@ -1,10 +1,17 @@
 # Preply — Breakage estimation (case study)
 
-dbt project on DuckDB. Current state: **sources + staging layer**. The
-intermediate layer (cycle logic, lesson-to-cycle mapping, per-segment
-booking curves) and the marts come in following commits — the full design,
-including the worked example and the decisions behind it, lives in the
-proposal document (outside this repo).
+dbt project on DuckDB. Estimates breakage revenue per payment, refreshed
+daily while a payment's 28-day cycle is still open, replaced by the known
+actual once it closes. Built for Preply's Analytics Engineer case study.
+
+## Deliverables
+
+- **This repo** — the dbt project (staging → intermediate → marts), tests, and this README.
+- **Dashboard mockup** — [claude.ai/artifact/WcKx1sGQfhaMiFRkZ7Tg15](https://claude.ai/artifact/WcKx1sGQfhaMiFRkZ7Tg15)
+- **Written summary + AI usage note** (slide deck) — [claude.ai/artifact/LGhw7DjDZLNLToSVYvN17E](https://claude.ai/artifact/LGhw7DjDZLNLToSVYvN17E)
+
+Both artifact links are private by default — share them from the page's
+share menu before sending this repo along.
 
 ## Requirements
 
@@ -25,15 +32,54 @@ From `preply_breakage/` (`profiles.yml` lives at the project root, not in
 ```bash
 export DBT_PROFILES_DIR=$(pwd)
 
-dbt seed   # loads seeds/*.csv into dev.duckdb (raw_payments, raw_lessons, raw_students)
-dbt run    # builds the models (staging only, for now)
-dbt test   # runs the tests
+dbt seed    # loads seeds/*.csv into dev.duckdb (raw_payments, raw_lessons, raw_students)
+dbt run     # builds staging -> intermediate -> marts
+dbt test    # runs the tests
 ```
 
 **Note**: `dev.duckdb` uses an exclusive lock. If you have it open in VS
 Code's DuckDB extension (or another client), close that connection before
 running `dbt seed`/`dbt run`, or you'll get `IO Error: Could not set lock on
 file`.
+
+## Data model
+
+Three layers, one clear grain per model:
+
+| model | layer | grain |
+|---|---|---|
+| `stg_payments`, `stg_lessons`, `stg_students` | staging | one row per source record, cast/renamed only |
+| `int_payment_cycles` | intermediate | one row per payment — cycle_start/end, cycle_number, is_renewal, is_closed |
+| `int_lesson_cycles` | intermediate | one row per lesson — mapped to the one cycle it was booked into |
+| `int_cycle_daily_progress` | intermediate | one row per payment × calendar day of its cycle — cumulative hours booked as of that day, recomputed from full booking history (no stored state) |
+| `int_segment_burn_curves` | intermediate | one row per `(plan_hours, is_renewal)` segment × day-in-cycle — the historical average % of plan booked by that day, from closed cycles only |
+| `mart_breakage_daily` | marts | one row per payment × snapshot_date — actual once closed, best current estimate while open |
+
+**Estimation**: while a payment's cycle is open, `mart_breakage_daily`
+prefers the segment burn-curve (Method B) — this payment's progress so far,
+plus how much more its segment typically books before cycle end — falling
+back to a linear extrapolation of the payment's own pace (Method A) when its
+segment has fewer than 20 closed cycles of history. Both methods are
+computed for every row (including closed cycles' historical days) so they
+can be backtested against the known actual once it exists;
+`estimated_breakage_linear_usd` / `estimated_breakage_segment_usd` /
+`method_used` are all exposed on the mart for that reason. Full reasoning,
+the backtest results, and the assumptions behind the n≥20 threshold are in
+the written summary linked above.
+
+**`is_current_snapshot`**: true on exactly one row per payment — its
+final-day row if closed, today's row if still open. Any dashboard total
+should filter on this, not on `snapshot_date = as_of_date()` (which would
+silently exclude almost every already-closed payment). Enforced by
+`assert_one_current_snapshot_per_payment`.
+
+## Configuration
+
+- **`cycle_length_days`** (dbt var, default `28`) — the subscription cycle
+  length, used everywhere a cycle boundary or burn-curve percentage is
+  computed (`int_payment_cycles`, `int_cycle_daily_progress`,
+  `mart_breakage_daily`). Override at build time, e.g. to check what a
+  30-day cycle would do: `dbt run --vars '{cycle_length_days: 30}'`.
 
 ## Point in time ("today")
 
@@ -78,9 +124,25 @@ models/
     stg_payments.sql
     stg_lessons.sql
     stg_students.sql
+  intermediate/
+    _schema.yml
+    int_payment_cycles.sql
+    int_lesson_cycles.sql
+    int_cycle_daily_progress.sql
+    int_segment_burn_curves.sql
+  marts/
+    _schema.yml
+    mart_breakage_daily.sql
+macros/
+  as_of_date.sql             # the only place "today" is resolved
+  generate_schema_name.sql   # literal per-layer schema names
 tests/
   assert_hours_booked_positive.sql
   assert_plan_hours_positive.sql
+  assert_cycles_are_contiguous.sql
+  assert_no_cycle_overbooking.sql
+  assert_one_current_snapshot_per_payment.sql
+  assert_breakage_not_negative.sql
 seeds/
   raw_payments.csv, raw_lessons.csv, raw_students.csv   # the case's real dataset
   dataset_README.md                                     # dataset documentation as received
@@ -101,8 +163,16 @@ the same pattern without having to ask:
 | prefix | layer | default materialization |
 |---|---|---|
 | `stg_` | staging | view |
-| `int_` | intermediate | view |
+| `int_` | intermediate | table |
 | `fct_` / `mart_` | marts | table |
+
+Staging stays view: thin cast/rename over a source, cheap to recompute,
+and in a warehouse billed per bytes scanned (BigQuery, Snowflake) a view
+here costs the same as querying the source directly. Intermediate is
+table: these models do real join/aggregation work (a range-join, an
+aggregation over ~260k rows), and a warehouse billed per query would
+otherwise repeat that computation on every read instead of paying once
+for storage — same reasoning marts already gets by default.
 
 **One `_schema.yml` per folder**, not one file per model, and not separate
 "sources.yml" + "models.yml" files. The leading `_` keeps it at the top when
@@ -170,3 +240,20 @@ needs `DBT_PROFILES_DIR` just like `dbt run` does.
   `joined_at`) for consistency.
 - No business logic here (no cycles, no payment-to-booking mapping) — that's
   exactly what separates staging from intermediate.
+
+## Business-logic tests
+
+Beyond the standard `unique`/`not_null`/`accepted_values`/`relationships`
+tests in each layer's `_schema.yml`, six singular tests in `tests/` check
+things specific to this domain:
+
+- `assert_hours_booked_positive`, `assert_plan_hours_positive` — no
+  negative or zero-hour rows survive staging.
+- `assert_cycles_are_contiguous` — a student's cycle N+1 starts exactly
+  where cycle N's `cycle_end_exclusive` ends, with no gap or overlap.
+- `assert_no_cycle_overbooking` — no payment's cumulative hours booked
+  ever exceeds its plan size in `int_cycle_daily_progress`.
+- `assert_one_current_snapshot_per_payment` — `is_current_snapshot` is
+  true on exactly one row per payment (see "Data model" above).
+- `assert_breakage_not_negative` — `breakage_usd` is never negative in
+  the final mart.
