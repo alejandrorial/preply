@@ -584,7 +584,8 @@
       'On ' + dates[0] + ' the month already looked like ' + usd(firstTotal) + ', of which only ' +
       usd(actual[0]) + ' was known for certain. By ' + dates[n-1] + ' the total stands at ' + usd(lastTotal) +
       ' — ' + drift.toFixed(1) + '% from where it started — but ' + usd(actual[n-1]) +
-      ' of it is now fact. The number barely moves; what changes is how much of it is still a guess.';
+      ' of it is now fact. The number barely moves; what changes is how much of it is still a guess — ' +
+      usd(estimated[n-1]) + ' of this month is still to land, and the recognition calendar below breaks that down by day.';
   }
 
   trendSelect.addEventListener('change', function(){ drawTrend(this.value); });
