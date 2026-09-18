@@ -15,7 +15,6 @@ with lessons as (
         payment_id
         , student_id
         , cycle_start
-        , cycle_start_date
         , cycle_end_exclusive
 
     from {{ ref('int_payment_cycles') }}
@@ -35,9 +34,6 @@ with lessons as (
         , lessons.booked_at::date as booked_date
         , lessons.hours_booked
         , cycles.payment_id
-        , cycles.cycle_start
-        , date_diff('day', cycles.cycle_start_date, lessons.booked_at::date)
-            as day_in_cycle
 
     from lessons
     left join cycles

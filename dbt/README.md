@@ -6,19 +6,27 @@ actual once it closes. Built for Preply's Analytics Engineer case study.
 
 ## Deliverables
 
-- **This repo** — the dbt project (staging → intermediate → marts), tests, and this README.
-- **Dashboard mockup** and **written summary + AI usage note** — provided as standalone HTML files alongside this project.
+- **The dbt project** — this folder: staging → intermediate → marts, tests, and this README.
+- **Dashboard mockup** — [`../breakage_dashboard.html`](../breakage_dashboard.html)
+  at the repo root. A standalone file: open it in a browser, no server or
+  build step. It is built from this project's `mart_breakage_daily`, with
+  the data as of 2026-04-17 baked in.
+- **Written summary + AI usage note** — a short slide deck, submitted
+  alongside this repo.
 
 ## Requirements
 
-- Python 3.9+ (on this machine: 3.9.6 — caps dbt-core at 1.10.x; with Python
-  3.10+ you can move to a newer dbt version without changing anything else
-  in the project).
-- `pip3 install --user dbt-core dbt-duckdb`
+- A dbt with a DuckDB adapter, plus Python 3.9+ for the seeds.
+- `pip3 install --user dbt-core dbt-duckdb` gets you there.
 
-The `dbt` script installs into `~/Library/Python/3.9/bin` on macOS, which
-usually isn't on `PATH` by default. Either add it to your `PATH`, or call
-the full path: `~/Library/Python/3.9/bin/dbt`.
+Nothing in this project is engine-specific beyond standard dbt (`ref`,
+`var`, a `generate_schema_name` override) and DuckDB SQL, so either dbt
+runtime works. For the record, it was built and verified on **dbt Fusion
+2.0.0-preview.218** against DuckDB.
+
+On macOS, `pip3 install --user` puts the `dbt` script in
+`~/Library/Python/3.x/bin`, which usually isn't on `PATH` by default —
+either add it, or call the full path.
 
 ## How to run it
 
