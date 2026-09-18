@@ -5,12 +5,12 @@ refreshed daily while a payment's cycle is still open, replaced by the
 known actual once it closes — built for Preply's Analytics Engineer
 take-home case study.
 
-**Start here → [`preply_breakage/README.md`](preply_breakage/README.md)**
-for how to run the project, the data model, and links to the dashboard
-mockup and written summary.
+**Start here → [`dbt/README.md`](dbt/README.md)**
+for how to run the project and a description of the data model. The
+dashboard mockup and written summary are provided as standalone HTML files.
 
 ## Repo layout
 
 ```
-preply_breakage/   the dbt project — staging, intermediate, marts, tests
+dbt/   the dbt project — staging, intermediate, marts, tests
 ```

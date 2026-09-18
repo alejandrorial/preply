@@ -40,7 +40,7 @@ models:
       +schema: stg_preply
     intermediate:
       +materialized: table
-      +schema: working_preply
+      +schema: intermediate_preply
     marts:
       +materialized: table
       +schema: marts_preply

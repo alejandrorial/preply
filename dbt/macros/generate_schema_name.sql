@@ -1,7 +1,7 @@
 {#
     dbt's default behavior prefixes a custom `+schema` config with the
     target's schema (e.g. `main_stg_preply`). We want the literal schema
-    name declared in dbt_project.yml (`stg_preply`, `working_preply`,
+    name declared in dbt_project.yml (`stg_preply`, `intermediate_preply`,
     `marts_preply`), so we override the default macro. This is the standard
     override documented in dbt's own docs, not a project-specific hack.
 #}

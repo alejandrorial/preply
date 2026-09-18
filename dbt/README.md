@@ -7,11 +7,7 @@ actual once it closes. Built for Preply's Analytics Engineer case study.
 ## Deliverables
 
 - **This repo** — the dbt project (staging → intermediate → marts), tests, and this README.
-- **Dashboard mockup** — [claude.ai/artifact/WcKx1sGQfhaMiFRkZ7Tg15](https://claude.ai/artifact/WcKx1sGQfhaMiFRkZ7Tg15)
-- **Written summary + AI usage note** (slide deck) — [claude.ai/artifact/LGhw7DjDZLNLToSVYvN17E](https://claude.ai/artifact/LGhw7DjDZLNLToSVYvN17E)
-
-Both artifact links are private by default — share them from the page's
-share menu before sending this repo along.
+- **Dashboard mockup** and **written summary + AI usage note** — provided as standalone HTML files alongside this project.
 
 ## Requirements
 
@@ -26,7 +22,7 @@ the full path: `~/Library/Python/3.9/bin/dbt`.
 
 ## How to run it
 
-From `preply_breakage/` (`profiles.yml` lives at the project root, not in
+From `dbt/` (`profiles.yml` lives at the project root, not in
 `~/.dbt/`, so the project is self-contained):
 
 ```bash
@@ -104,7 +100,7 @@ mirroring how a real warehouse separates layers for permissioning (only
 | layer | schema |
 |---|---|
 | staging | `stg_preply` |
-| intermediate | `working_preply` |
+| intermediate | `intermediate_preply` |
 | marts | `marts_preply` |
 
 Configured in `dbt_project.yml` (`+schema` per folder) plus
