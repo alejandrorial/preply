@@ -1,0 +1,83 @@
+version: 2
+
+models:
+  - name: mart_breakage_daily
+    description: >
+      For every payment and every day of its cycle, the resulting
+      breakage: the known actual figure once the cycle has closed, or the
+      best current estimate while it's still open — plus both individual
+      estimation methods (so the estimate can be backtested against the
+      actual once a cycle closes) and student dimensions, so the
+      dashboard can filter/group by country, channel, and persona without
+      an extra join.
+      Grain: one row per payment x snapshot_date.
+    columns:
+      - name: payment_snapshot_key
+        description: "Surrogate key: payment_id || snapshot_date. Grain-breaking if not unique — keep at error."
+        data_tests: [unique, not_null]
+      - name: method_used
+        description: >
+          Which estimate breakage_usd falls back to while a payment is
+          still open: 'segment' when its (plan_hours, is_renewal) burn
+          curve has at least 20 historical closed cycles behind it,
+          'linear' otherwise. Irrelevant once a cycle is closed —
+          breakage_usd then uses the known actual figure regardless.
+        data_tests:
+          - accepted_values:
+              config:
+                severity: warn
+              arguments:
+                values: ['linear', 'segment']
+      - name: actual_breakage_usd
+        description: >
+          Known only once the cycle has closed (is_closed) — null while
+          open. plan_hours minus hours actually booked over the full
+          cycle, at full price: Preply keeps 100% of unbooked hours'
+          value, vs. 20% commission on hours that were booked.
+      - name: estimated_breakage_linear_usd
+        description: >
+          Method A: this payment's own booking rate through day_in_cycle,
+          extrapolated linearly to a full cycle (cycle_length_days var,
+          28 by default). Computed for every row, including closed
+          cycles' historical days, specifically so it can be backtested
+          against actual_breakage_usd once known.
+      - name: estimated_breakage_segment_usd
+        description: >
+          Method B: this payment's actual progress plus how much more its
+          (plan_hours, is_renewal) segment typically booked between today
+          and the end of the cycle, per int_segment_burn_curves. Null when
+          the segment has no closed-cycle history at all.
+      - name: breakage_usd
+        description: >
+          The headline figure: actual_breakage_usd when known, otherwise
+          whichever estimate method_used points to. What the dashboard
+          sums — not a new calculation, just the resolved choice between
+          the columns above.
+      - name: commission_revenue_usd
+        description: 20% of the value of hours booked so far — Preply's cut when a lesson happens, vs. 100% of the value when it doesn't.
+      - name: country_code
+        description: >
+          Null when the payment's student_id has no match in
+          stg_students (see the warn-severity relationships test
+          upstream) — left join on purpose, so an orphaned student
+          doesn't silently drop that payment's revenue from the mart.
+      - name: first_subject
+        description: >
+          The language the student is learning. Not used as a
+          burn-curve segmentation axis (only plan_hours x is_renewal
+          showed real signal there) — exposed here purely as a
+          dashboard filter/group-by dimension, same role as
+          country_code, since the case study lists it as available
+          student metadata.
+      - name: is_current_snapshot
+        description: >
+          True on exactly one row per payment: its final-day row if
+          closed, today's row if still open. The dashboard's headline "breakage
+          right now" totals should filter on this — not on snapshot_date
+          = as_of_date(), which only catches payments whose cycle happens
+          to still span today and would silently exclude almost every
+          closed payment. See assert_one_current_snapshot_per_payment.
+        data_tests:
+          - not_null:
+              config:
+                severity: warn
