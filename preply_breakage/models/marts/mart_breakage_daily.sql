@@ -160,8 +160,6 @@ with progress as (
         student_id
         , country_code
         , acquisition_channel
-        , persona
-        , first_subject
 
     from {{ ref('stg_students') }}
 
@@ -185,8 +183,6 @@ select
     , breakage_resolved.payment_snapshot_key
     , students.country_code
     , students.acquisition_channel
-    , students.persona
-    , students.first_subject
     -- True on each payment's single latest row — its final-day row if
     -- closed, today's row if still open. The dashboard's headline
     -- "breakage right now" totals should filter on this instead of

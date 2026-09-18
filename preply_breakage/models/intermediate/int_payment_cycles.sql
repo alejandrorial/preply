@@ -1,9 +1,9 @@
-{{ config(materialized='table') }}
--- Table, not the intermediate default of view: is_closed depends on
--- as_of_date(), which resolves to current_date by default. A view
--- re-evaluates current_date on every query, silently drifting to whatever
--- day it happens to be queried — a table pins "today" to whenever dbt last
--- ran, matching a real daily batch job instead of a live-query moment.
+-- Must stay a table even if the intermediate default ever reverts to
+-- view: is_closed depends on as_of_date(), which resolves to
+-- current_date by default. A view re-evaluates current_date on every
+-- query, silently drifting to whatever day it happens to be queried — a
+-- table pins "today" to whenever dbt last ran, matching a real daily
+-- batch job instead of a live-query moment.
 
 with payments as (
 

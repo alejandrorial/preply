@@ -39,7 +39,7 @@ models:
       +materialized: view
       +schema: stg_preply
     intermediate:
-      +materialized: view
+      +materialized: table
       +schema: working_preply
     marts:
       +materialized: table

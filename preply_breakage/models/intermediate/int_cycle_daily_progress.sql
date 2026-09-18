@@ -1,8 +1,7 @@
-{{ config(materialized='table') }}
--- Table, not the intermediate default of view: the calendar spine's upper
--- bound depends on as_of_date(). Same reasoning as int_payment_cycles —
--- pin "today" to build time, don't let a view re-evaluate current_date on
--- every later query.
+-- Must stay a table even if the intermediate default ever reverts to
+-- view: the calendar spine's upper bound depends on as_of_date(). Same
+-- reasoning as int_payment_cycles — pin "today" to build time, don't let
+-- a view re-evaluate current_date on every later query.
 
 with cycles as (
 
