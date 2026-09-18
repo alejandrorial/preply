@@ -13,37 +13,34 @@
     background: #ebebee;
     font-family: 'Poppins', Arial, sans-serif;
   }
-  .deck { max-width: 1280px; margin: 0 auto; }
-  /* The stage keeps its untransformed 1920px layout width, so clip it here
-     or the page picks up a horizontal scrollbar. Nothing visible is lost:
-     the scaled content fits inside this box. */
-  .slide { margin-bottom: 28px; overflow: hidden; }
-  /* The stage is the real 1920x1080 canvas; it gets scaled down to fit. */
-  .stage {
-    width: 1920px; height: 1080px;
-    transform-origin: top left;
-    background: #ffffff;
+  .deck { max-width: 1700px; margin: 0 auto; }
+  .slide {
+    position: relative; overflow: hidden;
+    background: #ffffff; border-radius: 4px;
     box-shadow: 0 2px 4px rgba(18,17,24,.08), 0 12px 32px rgba(18,17,24,.10);
-    border-radius: 4px;
-    overflow: hidden;
   }
-  /* Slides position some children absolutely against the slide itself. */
-  .stage > section { position: relative; width: 1920px; height: 1080px; }
+  /* The real canvas. min-height holds the 16:9 shape; height stays auto so
+     an overlong slide reports its true height instead of hiding the rest. */
+  .stage {
+    position: absolute; top: 0; left: 0;
+    width: 1920px; min-height: 1080px; height: auto;
+    transform-origin: top left;
+  }
+  .stage > section { position: relative; width: 1920px; min-height: 1080px; }
   .num {
     text-align: right; font-size: 12px; color: #82828c;
-    padding-top: 8px; font-variant-numeric: tabular-nums;
+    padding: 8px 0 28px; font-variant-numeric: tabular-nums;
   }
   @media print {
     body { background: #fff; padding: 0; }
-    .slide { margin: 0; page-break-after: always; break-after: page; }
-    .stage { box-shadow: none; border-radius: 0; }
+    .slide { box-shadow: none; border-radius: 0; page-break-after: always; break-after: page; }
     .num { display: none; }
   }
 </style>
 </head>
 <body>
 <div class="deck">
-<div class="slide"><div class="stage"><section id="cover" data-transition="fade" style="background:#ffffff; color:#121118; font-family:'Poppins', Arial, sans-serif; padding:128px; display:flex; flex-direction:column; justify-content:center; gap:36px">
+<div class="slide"><div class="stage"><section id="cover" data-transition="fade" style="background:#ffffff; color:#121118; font-family:'Poppins', Arial, sans-serif; padding:88px 112px; display:flex; flex-direction:column; justify-content:center; gap:36px">
   <div style="display:flex; align-items:center; gap:16px">
     <div style="background:#FF79AC; border-radius:10px; padding:10px 22px">
       <p style="font-size:24px; font-weight:700; color:#121118">preply.</p>
@@ -52,103 +49,103 @@
   </div>
   <h1 style="font-size:100px; font-weight:700; line-height:1.08; color:#121118">Estimating breakage<br>before the cycle closes</h1>
   <p style="font-size:32px; color:#5b5b66; width:1300px">A daily-updated model of expected breakage revenue per payment, and the dashboard PayOps would use to watch it.</p>
-  <div style="position:absolute; left:128px; bottom:64px; display:flex; gap:20px; align-items:center">
+  <div style="position:absolute; left:112px; bottom:64px; display:flex; gap:20px; align-items:center">
     <p style="font-size:24px; font-weight:600; color:#121118">Alejandro Rial</p>
     <p style="font-size:24px; color:#c9c9cf">·</p>
     <p style="font-size:24px; color:#5b5b66">dbt + DuckDB · September 2026</p>
   </div>
-</section></div><div class="num">1 / 13</div></div>
-<div class="slide"><div class="stage"><section id="agenda" style="background:#ffffff; color:#121118; font-family:'Poppins', Arial, sans-serif; padding:128px; display:flex; flex-direction:column; gap:44px">
-  <div style="display:flex; align-items:center; gap:12px">
-    <div style="width:16px; height:16px; background:#FF79AC; border-radius:4px"></div>
-    <p style="font-size:22px; font-weight:600; letter-spacing:2px; text-transform:uppercase; color:#5b5b66">Agenda</p>
+</section></div></div><div class="num">1 / 13</div>
+<div class="slide"><div class="stage"><section id="agenda" style="background:#ffffff; color:#121118; font-family:'Poppins', Arial, sans-serif; padding:72.7px 92.6px; display:flex; flex-direction:column; gap:36.4px">
+  <div style="display:flex; align-items:center; gap:9.9px">
+    <div style="width:13.2px; height:13.2px; background:#FF79AC; border-radius:4px"></div>
+    <p style="font-size:18.2px; font-weight:600; letter-spacing:1.7px; text-transform:uppercase; color:#5b5b66">Agenda</p>
   </div>
-  <h2 style="font-size:60px; font-weight:700; color:#121118">What I'll cover</h2>
+  <h2 style="font-size:49.6px; font-weight:700; color:#121118">What I'll cover</h2>
   <div style="display:flex; flex-direction:column; gap:0">
-    <div style="display:flex; align-items:center; gap:28px; padding:22px 0; border-top:1px solid #E5E5E8">
-      <div style="width:52px; height:52px; background:#FFEAF2; border-radius:100px; display:flex; align-items:center; justify-content:center"><p style="font-size:24px; font-weight:700; color:#121118">01</p></div>
-      <p style="font-size:30px; color:#121118">The problem, and how I chose to estimate breakage</p>
+    <div style="display:flex; align-items:center; gap:23.1px; padding:18.2px 0; border-top:1px solid #E5E5E8">
+      <div style="width:43px; height:43px; background:#FFEAF2; border-radius:100px; display:flex; align-items:center; justify-content:center"><p style="font-size:19.8px; font-weight:700; color:#121118">01</p></div>
+      <p style="font-size:24.8px; color:#121118">The problem, and how I chose to estimate breakage</p>
     </div>
-    <div style="display:flex; align-items:center; gap:28px; padding:22px 0; border-top:1px solid #E5E5E8">
-      <div style="width:52px; height:52px; background:#FFEAF2; border-radius:100px; display:flex; align-items:center; justify-content:center"><p style="font-size:24px; font-weight:700; color:#121118">02</p></div>
-      <p style="font-size:30px; color:#121118">The data model: layers, grain, and a deliberate trade-off</p>
+    <div style="display:flex; align-items:center; gap:23.1px; padding:18.2px 0; border-top:1px solid #E5E5E8">
+      <div style="width:43px; height:43px; background:#FFEAF2; border-radius:100px; display:flex; align-items:center; justify-content:center"><p style="font-size:19.8px; font-weight:700; color:#121118">02</p></div>
+      <p style="font-size:24.8px; color:#121118">The data model: layers, grain, and a deliberate trade-off</p>
     </div>
-    <div style="display:flex; align-items:center; gap:28px; padding:22px 0; border-top:1px solid #E5E5E8">
-      <div style="width:52px; height:52px; background:#FFEAF2; border-radius:100px; display:flex; align-items:center; justify-content:center"><p style="font-size:24px; font-weight:700; color:#121118">03</p></div>
-      <p style="font-size:30px; color:#121118">Assumptions, trade-offs, and honest caveats</p>
+    <div style="display:flex; align-items:center; gap:23.1px; padding:18.2px 0; border-top:1px solid #E5E5E8">
+      <div style="width:43px; height:43px; background:#FFEAF2; border-radius:100px; display:flex; align-items:center; justify-content:center"><p style="font-size:19.8px; font-weight:700; color:#121118">03</p></div>
+      <p style="font-size:24.8px; color:#121118">Assumptions, trade-offs, and honest caveats</p>
     </div>
-    <div style="display:flex; align-items:center; gap:28px; padding:22px 0; border-top:1px solid #E5E5E8">
-      <div style="width:52px; height:52px; background:#FFEAF2; border-radius:100px; display:flex; align-items:center; justify-content:center"><p style="font-size:24px; font-weight:700; color:#121118">04</p></div>
-      <p style="font-size:30px; color:#121118">The dashboard PayOps would actually open every morning</p>
+    <div style="display:flex; align-items:center; gap:23.1px; padding:18.2px 0; border-top:1px solid #E5E5E8">
+      <div style="width:43px; height:43px; background:#FFEAF2; border-radius:100px; display:flex; align-items:center; justify-content:center"><p style="font-size:19.8px; font-weight:700; color:#121118">04</p></div>
+      <p style="font-size:24.8px; color:#121118">The dashboard PayOps would actually open every morning</p>
     </div>
-    <div style="display:flex; align-items:center; gap:28px; padding:22px 0; border-top:1px solid #E5E5E8; border-bottom:1px solid #E5E5E8">
-      <div style="width:52px; height:52px; background:#FFEAF2; border-radius:100px; display:flex; align-items:center; justify-content:center"><p style="font-size:24px; font-weight:700; color:#121118">05</p></div>
-      <p style="font-size:30px; color:#121118">What I'd build next, and how I used AI to get here</p>
-    </div>
-  </div>
-</section></div><div class="num">2 / 13</div></div>
-<div class="slide"><div class="stage"><section id="problem" style="background:#ffffff; color:#121118; font-family:'Poppins', Arial, sans-serif; padding:128px 128px 160px; display:flex; flex-direction:column; gap:40px">
-  <div style="display:flex; align-items:center; gap:12px">
-    <div style="width:16px; height:16px; background:#FF79AC; border-radius:4px"></div>
-    <p style="font-size:22px; font-weight:600; letter-spacing:2px; text-transform:uppercase; color:#5b5b66">01 — The problem</p>
-  </div>
-  <h2 style="font-size:56px; font-weight:700; color:#121118">Breakage is real revenue PayOps can't see for up to 28 days</h2>
-  <p style="font-size:29px; color:#121118; width:1550px">Preply keeps 20% commission on booked hours immediately, and 100% of unbooked hours once a cycle closes. Commission is known on day 1. Breakage is only known on day 28 — and PayOps needs a number every morning, not once a month.</p>
-  <div style="display:flex; gap:28px">
-    <div style="flex:1; background:#ffffff; border:1px solid #E5E5E8; border-radius:16px; padding:36px; display:flex; flex-direction:column; gap:14px">
-      <div style="width:80px; height:80px; background:#FFEAF2; border-radius:100px; display:flex; align-items:center; justify-content:center"><p style="font-size:24px; font-weight:700; color:#121118">Day 1</p></div>
-      <h3 style="font-size:27px; font-weight:600; color:#121118">Commission is known</h3>
-      <p style="font-size:22px; color:#5b5b66">20% of every booked hour, recognized as it happens.</p>
-    </div>
-    <div style="flex:1; background:#ffffff; border:1px solid #E5E5E8; border-radius:16px; padding:36px; display:flex; flex-direction:column; gap:14px">
-      <div style="width:80px; height:80px; background:#FFEAF2; border-radius:100px; display:flex; align-items:center; justify-content:center"><p style="font-size:22px; font-weight:700; color:#121118">Day 28</p></div>
-      <h3 style="font-size:27px; font-weight:600; color:#121118">Breakage is known</h3>
-      <p style="font-size:22px; color:#5b5b66">100% of unbooked hours, only once the cycle closes.</p>
-    </div>
-    <div style="flex:1; background:#FF79AC; border-radius:16px; padding:36px; display:flex; flex-direction:column; gap:14px">
-      <div style="width:80px; height:80px; background:#ffffff; border-radius:100px; display:flex; align-items:center; justify-content:center"><p style="font-size:26px; font-weight:700; color:#121118">Day X</p></div>
-      <h3 style="font-size:27px; font-weight:600; color:#121118">This model's job</h3>
-      <p style="font-size:22px; color:#121118">A best-guess for every open payment, refreshed every day of the wait.</p>
+    <div style="display:flex; align-items:center; gap:23.1px; padding:18.2px 0; border-top:1px solid #E5E5E8; border-bottom:1px solid #E5E5E8">
+      <div style="width:43px; height:43px; background:#FFEAF2; border-radius:100px; display:flex; align-items:center; justify-content:center"><p style="font-size:19.8px; font-weight:700; color:#121118">05</p></div>
+      <p style="font-size:24.8px; color:#121118">What I'd build next, and how I used AI to get here</p>
     </div>
   </div>
-</section></div><div class="num">3 / 13</div></div>
-<div class="slide"><div class="stage"><section id="approach" style="background:#ffffff; color:#121118; font-family:'Poppins', Arial, sans-serif; padding:128px 128px 160px; display:flex; flex-direction:column; gap:26px">
-  <div style="display:flex; align-items:center; gap:12px">
-    <div style="width:16px; height:16px; background:#FF79AC; border-radius:4px"></div>
-    <p style="font-size:22px; font-weight:600; letter-spacing:2px; text-transform:uppercase; color:#5b5b66">02 — My approach</p>
+</section></div></div><div class="num">2 / 13</div>
+<div class="slide"><div class="stage"><section id="problem" style="background:#ffffff; color:#121118; font-family:'Poppins', Arial, sans-serif; padding:77.4px 98.5px 77.4px; display:flex; flex-direction:column; gap:35.2px">
+  <div style="display:flex; align-items:center; gap:10.6px">
+    <div style="width:14.1px; height:14.1px; background:#FF79AC; border-radius:4px"></div>
+    <p style="font-size:19.4px; font-weight:600; letter-spacing:1.8px; text-transform:uppercase; color:#5b5b66">01 — The problem</p>
   </div>
-  <h2 style="font-size:54px; font-weight:700; color:#121118">Two ways to guess what an open cycle will do</h2>
-  <div style="display:flex; gap:32px">
-    <div style="flex:1; background:#ffffff; border:1px solid #E5E5E8; border-radius:16px; padding:32px; display:flex; flex-direction:column; gap:12px">
-      <p style="font-size:20px; text-transform:uppercase; letter-spacing:1px; color:#5b5b66; font-weight:600">Method A — linear run-rate</p>
-      <h3 style="font-size:26px; font-weight:600; color:#121118">Extrapolate this payment's own pace</h3>
-      <p style="font-size:21px; color:#5b5b66">Hours booked so far ÷ days elapsed × 28. Simple, and reacts fast — but with only a few lessons booked, one payment's own pace is noisy.</p>
+  <h2 style="font-size:49.3px; font-weight:700; color:#121118">Breakage is real revenue PayOps can't see for up to 28 days</h2>
+  <p style="font-size:25.5px; color:#121118; width:1363.8px">Preply keeps 20% commission on booked hours immediately, and 100% of unbooked hours once a cycle closes. Commission is known on day 1. Breakage is only known on day 28 — and PayOps needs a number every morning, not once a month.</p>
+  <div style="display:flex; gap:24.6px">
+    <div style="flex:1; background:#ffffff; border:1px solid #E5E5E8; border-radius:16px; padding:31.7px; display:flex; flex-direction:column; gap:12.3px">
+      <div style="width:70.4px; height:70.4px; background:#FFEAF2; border-radius:100px; display:flex; align-items:center; justify-content:center"><p style="font-size:21.1px; font-weight:700; color:#121118">Day 1</p></div>
+      <h3 style="font-size:23.8px; font-weight:600; color:#121118">Commission is known</h3>
+      <p style="font-size:19.4px; color:#5b5b66">20% of every booked hour, recognized as it happens.</p>
     </div>
-    <div style="flex:1; background:#ffffff; border:2px solid #FF79AC; border-radius:16px; padding:32px; display:flex; flex-direction:column; gap:12px">
-      <p style="font-size:20px; text-transform:uppercase; letter-spacing:1px; color:#121118; font-weight:700">Method B — segment burn-curve (chosen)</p>
-      <h3 style="font-size:26px; font-weight:600; color:#121118">Use how similar payments actually ended</h3>
-      <p style="font-size:21px; color:#5b5b66">What percent of a plan is typically booked by a given day, historically? Apply that curve to this payment instead of its own thin sample.</p>
-      <p style="font-size:18px; font-weight:600; color:#121118">Segmented by:</p>
-      <ul style="font-size:20px; color:#5b5b66">
+    <div style="flex:1; background:#ffffff; border:1px solid #E5E5E8; border-radius:16px; padding:31.7px; display:flex; flex-direction:column; gap:12.3px">
+      <div style="width:70.4px; height:70.4px; background:#FFEAF2; border-radius:100px; display:flex; align-items:center; justify-content:center"><p style="font-size:19.4px; font-weight:700; color:#121118">Day 28</p></div>
+      <h3 style="font-size:23.8px; font-weight:600; color:#121118">Breakage is known</h3>
+      <p style="font-size:19.4px; color:#5b5b66">100% of unbooked hours, only once the cycle closes.</p>
+    </div>
+    <div style="flex:1; background:#FF79AC; border-radius:16px; padding:31.7px; display:flex; flex-direction:column; gap:12.3px">
+      <div style="width:70.4px; height:70.4px; background:#ffffff; border-radius:100px; display:flex; align-items:center; justify-content:center"><p style="font-size:22.9px; font-weight:700; color:#121118">Day X</p></div>
+      <h3 style="font-size:23.8px; font-weight:600; color:#121118">This model's job</h3>
+      <p style="font-size:19.4px; color:#121118">A best-guess for every open payment, refreshed every day of the wait.</p>
+    </div>
+  </div>
+</section></div></div><div class="num">3 / 13</div>
+<div class="slide"><div class="stage"><section id="approach" style="background:#ffffff; color:#121118; font-family:'Poppins', Arial, sans-serif; padding:69.3px 88.3px 69.3px; display:flex; flex-direction:column; gap:20.5px">
+  <div style="display:flex; align-items:center; gap:9.5px">
+    <div style="width:12.6px; height:12.6px; background:#FF79AC; border-radius:4px"></div>
+    <p style="font-size:17.3px; font-weight:600; letter-spacing:1.6px; text-transform:uppercase; color:#5b5b66">02 — My approach</p>
+  </div>
+  <h2 style="font-size:42.6px; font-weight:700; color:#121118">Two ways to guess what an open cycle will do</h2>
+  <div style="display:flex; gap:25.2px">
+    <div style="flex:1; background:#ffffff; border:1px solid #E5E5E8; border-radius:16px; padding:25.2px; display:flex; flex-direction:column; gap:9.5px">
+      <p style="font-size:16px; text-transform:uppercase; letter-spacing:0.8px; color:#5b5b66; font-weight:600">Method A — linear run-rate</p>
+      <h3 style="font-size:20.5px; font-weight:600; color:#121118">Extrapolate this payment's own pace</h3>
+      <p style="font-size:16.5px; color:#5b5b66">Hours booked so far ÷ days elapsed × 28. Simple, and reacts fast — but with only a few lessons booked, one payment's own pace is noisy.</p>
+    </div>
+    <div style="flex:1; background:#ffffff; border:2px solid #FF79AC; border-radius:16px; padding:25.2px; display:flex; flex-direction:column; gap:9.5px">
+      <p style="font-size:16px; text-transform:uppercase; letter-spacing:0.8px; color:#121118; font-weight:700">Method B — segment burn-curve (chosen)</p>
+      <h3 style="font-size:20.5px; font-weight:600; color:#121118">Use how similar payments actually ended</h3>
+      <p style="font-size:16.5px; color:#5b5b66">What percent of a plan is typically booked by a given day, historically? Apply that curve to this payment instead of its own thin sample.</p>
+      <p style="font-size:16px; font-weight:600; color:#121118">Segmented by:</p>
+      <ul style="font-size:16px; color:#5b5b66">
         <li>Plan size (4h to 20h)</li>
         <li>New vs. renewing student</li>
         <li>Day within the cycle</li>
       </ul>
     </div>
   </div>
-  <div style="background:#FFEAF2; border-radius:16px; padding:28px 40px; display:flex; flex-direction:column; gap:8px">
-    <h3 style="font-size:23px; font-weight:600; color:#121118">Why segment, not linear, as the default</h3>
-    <p style="font-size:20px; color:#121118">A single payment's early booking pace is too thin a sample to extrapolate 17+ days forward. A segment built from thousands of already-closed cycles of the same plan size and renewal status is a far steadier signal — confirmed by backtesting both against real outcomes (next slide). Linear stays as the fallback for segments with too little history to trust (under 20 closed cycles).</p>
+  <div style="background:#FFEAF2; border-radius:16px; padding:22.1px 31.5px; display:flex; flex-direction:column; gap:6.3px">
+    <h3 style="font-size:18.1px; font-weight:600; color:#121118">Why segment, not linear, as the default</h3>
+    <p style="font-size:16px; color:#121118">A single payment's early booking pace is too thin a sample to extrapolate 17+ days forward. A segment built from thousands of already-closed cycles of the same plan size and renewal status is a far steadier signal — confirmed by backtesting both against real outcomes (next slide). Linear stays as the fallback for segments with too little history to trust (under 20 closed cycles).</p>
   </div>
-</section></div><div class="num">4 / 13</div></div>
-<div class="slide"><div class="stage"><section id="backtest" style="background:#ffffff; color:#121118; font-family:'Poppins', Arial, sans-serif; padding:128px 128px 160px; display:flex; flex-direction:column; gap:26px">
-  <div style="display:flex; align-items:center; gap:12px">
-    <div style="width:16px; height:16px; background:#FF79AC; border-radius:4px"></div>
-    <p style="font-size:22px; font-weight:600; letter-spacing:2px; text-transform:uppercase; color:#5b5b66">02 — My approach</p>
+</section></div></div><div class="num">4 / 13</div>
+<div class="slide"><div class="stage"><section id="backtest" style="background:#ffffff; color:#121118; font-family:'Poppins', Arial, sans-serif; padding:77.2px 98.2px 77.2px; display:flex; flex-direction:column; gap:22.8px">
+  <div style="display:flex; align-items:center; gap:10.5px">
+    <div style="width:14px; height:14px; background:#FF79AC; border-radius:4px"></div>
+    <p style="font-size:19.3px; font-weight:600; letter-spacing:1.8px; text-transform:uppercase; color:#5b5b66">02 — My approach</p>
   </div>
-  <h2 style="font-size:56px; font-weight:700; color:#121118">I didn't just pick one — I backtested both</h2>
-  <p style="font-size:24px; color:#5b5b66">Mean absolute error (MAE) in dollars, checked against the 8,846 cycles that have already closed. Lower is better.</p>
-  <table style="font-family:'Poppins', Arial, sans-serif; font-size:24px; color:#121118">
+  <h2 style="font-size:49.1px; font-weight:700; color:#121118">I didn't just pick one — I backtested both</h2>
+  <p style="font-size:21px; color:#5b5b66">Mean absolute error (MAE) in dollars, checked against the 8,846 cycles that have already closed. Lower is better.</p>
+  <table style="font-family:'Poppins', Arial, sans-serif; font-size:21px; color:#121118">
     <tr style="background:#FF79AC">
       <th style="width:22%; text-align:left; color:#121118; font-weight:700">Day in cycle</th>
       <th style="width:26%; text-align:left; color:#121118; font-weight:700">MAE — linear</th>
@@ -162,131 +159,131 @@
     <tr><td>Day 26</td><td>$6.87</td><td>$7.47</td><td>26.0%</td></tr>
     <tr style="background:#FFEAF2"><td>Day 27</td><td>$2.66</td><td>$4.28</td><td>13.2%</td></tr>
   </table>
-  <p style="font-size:18px; color:#5b5b66">"Segment wins per payment": of the individual closed payments at that day, the % where Method B landed closer to the real outcome than Method A — a payment-by-payment comparison, not just the two MAE averages.</p>
-  <div style="background:#FFEAF2; border-radius:16px; padding:28px 36px">
-    <p style="font-size:23px; color:#121118">Segment wins across almost the whole cycle. But there's a real crossover at days 26-27: with almost nothing left to book, a payment's own near-final pace beats the historical average. Day 28 is excluded from the table — the segment formula converges to the actual by construction that day, not by genuine accuracy.</p>
+  <p style="font-size:16px; color:#5b5b66">"Segment wins per payment": of the individual closed payments at that day, the % where Method B landed closer to the real outcome than Method A — a payment-by-payment comparison, not just the two MAE averages.</p>
+  <div style="background:#FFEAF2; border-radius:16px; padding:24.6px 31.6px">
+    <p style="font-size:20.2px; color:#121118">Segment wins across almost the whole cycle. But there's a real crossover at days 26-27: with almost nothing left to book, a payment's own near-final pace beats the historical average. Day 28 is excluded from the table — the segment formula converges to the actual by construction that day, not by genuine accuracy.</p>
   </div>
-</section></div><div class="num">5 / 13</div></div>
-<div class="slide"><div class="stage"><section id="model" style="background:#ffffff; color:#121118; font-family:'Poppins', Arial, sans-serif; padding:128px 128px 160px; display:flex; flex-direction:column; gap:28px">
-  <div style="display:flex; align-items:center; gap:12px">
-    <div style="width:16px; height:16px; background:#FF79AC; border-radius:4px"></div>
-    <p style="font-size:22px; font-weight:600; letter-spacing:2px; text-transform:uppercase; color:#5b5b66">03 — The data model</p>
+</section></div></div><div class="num">5 / 13</div>
+<div class="slide"><div class="stage"><section id="model" style="background:#ffffff; color:#121118; font-family:'Poppins', Arial, sans-serif; padding:74.4px 94.6px 74.4px; display:flex; flex-direction:column; gap:23.7px">
+  <div style="display:flex; align-items:center; gap:10.1px">
+    <div style="width:13.5px; height:13.5px; background:#FF79AC; border-radius:4px"></div>
+    <p style="font-size:18.6px; font-weight:600; letter-spacing:1.7px; text-transform:uppercase; color:#5b5b66">03 — The data model</p>
   </div>
-  <h2 style="font-size:56px; font-weight:700; color:#121118">Three layers, one clear grain per model</h2>
-  <div style="display:flex; gap:24px">
-    <div style="flex:1; display:flex; flex-direction:column; gap:12px">
-      <p style="font-size:20px; text-transform:uppercase; color:#5b5b66; font-weight:600">Staging</p>
-      <div style="background:#ffffff; border:1px solid #E5E5E8; border-radius:12px; padding:20px"><p style="font-size:21px; color:#121118">stg_payments</p></div>
-      <div style="background:#ffffff; border:1px solid #E5E5E8; border-radius:12px; padding:20px"><p style="font-size:21px; color:#121118">stg_lessons</p></div>
-      <div style="background:#ffffff; border:1px solid #E5E5E8; border-radius:12px; padding:20px"><p style="font-size:21px; color:#121118">stg_students</p></div>
+  <h2 style="font-size:47.3px; font-weight:700; color:#121118">Three layers, one clear grain per model</h2>
+  <div style="display:flex; gap:20.3px">
+    <div style="flex:1; display:flex; flex-direction:column; gap:10.1px">
+      <p style="font-size:16.9px; text-transform:uppercase; color:#5b5b66; font-weight:600">Staging</p>
+      <div style="background:#ffffff; border:1px solid #E5E5E8; border-radius:12px; padding:16.9px"><p style="font-size:17.7px; color:#121118">stg_payments</p></div>
+      <div style="background:#ffffff; border:1px solid #E5E5E8; border-radius:12px; padding:16.9px"><p style="font-size:17.7px; color:#121118">stg_lessons</p></div>
+      <div style="background:#ffffff; border:1px solid #E5E5E8; border-radius:12px; padding:16.9px"><p style="font-size:17.7px; color:#121118">stg_students</p></div>
     </div>
-    <div style="flex:1; display:flex; flex-direction:column; gap:12px">
-      <p style="font-size:20px; text-transform:uppercase; color:#5b5b66; font-weight:600">Intermediate</p>
-      <div style="background:#ffffff; border:1px solid #E5E5E8; border-radius:12px; padding:20px"><p style="font-size:21px; color:#121118">int_payment_cycles</p></div>
-      <div style="background:#ffffff; border:1px solid #E5E5E8; border-radius:12px; padding:20px"><p style="font-size:21px; color:#121118">int_lesson_cycles</p></div>
-      <div style="background:#ffffff; border:1px solid #E5E5E8; border-radius:12px; padding:20px"><p style="font-size:21px; color:#121118">int_cycle_daily_progress</p></div>
-      <div style="background:#ffffff; border:1px solid #E5E5E8; border-radius:12px; padding:20px"><p style="font-size:21px; color:#121118">int_segment_burn_curves</p></div>
+    <div style="flex:1; display:flex; flex-direction:column; gap:10.1px">
+      <p style="font-size:16.9px; text-transform:uppercase; color:#5b5b66; font-weight:600">Intermediate</p>
+      <div style="background:#ffffff; border:1px solid #E5E5E8; border-radius:12px; padding:16.9px"><p style="font-size:17.7px; color:#121118">int_payment_cycles</p></div>
+      <div style="background:#ffffff; border:1px solid #E5E5E8; border-radius:12px; padding:16.9px"><p style="font-size:17.7px; color:#121118">int_lesson_cycles</p></div>
+      <div style="background:#ffffff; border:1px solid #E5E5E8; border-radius:12px; padding:16.9px"><p style="font-size:17.7px; color:#121118">int_cycle_daily_progress</p></div>
+      <div style="background:#ffffff; border:1px solid #E5E5E8; border-radius:12px; padding:16.9px"><p style="font-size:17.7px; color:#121118">int_segment_burn_curves</p></div>
     </div>
-    <div style="flex:1; display:flex; flex-direction:column; gap:12px">
-      <p style="font-size:20px; text-transform:uppercase; color:#121118; font-weight:700">Marts</p>
-      <div style="background:#FF79AC; border-radius:12px; padding:24px; display:flex; flex-direction:column; gap:8px">
-        <p style="font-size:23px; font-weight:700; color:#121118">mart_breakage_daily</p>
-        <p style="font-size:19px; color:#121118">grain: 1 row per payment × snapshot_date</p>
+    <div style="flex:1; display:flex; flex-direction:column; gap:10.1px">
+      <p style="font-size:16.9px; text-transform:uppercase; color:#121118; font-weight:700">Marts</p>
+      <div style="background:#FF79AC; border-radius:12px; padding:20.3px; display:flex; flex-direction:column; gap:6.8px">
+        <p style="font-size:19.4px; font-weight:700; color:#121118">mart_breakage_daily</p>
+        <p style="font-size:16.1px; color:#121118">grain: 1 row per payment × snapshot_date</p>
       </div>
     </div>
   </div>
-  <div style="background:#FFEAF2; border-radius:16px; padding:28px 36px">
-    <p style="font-size:22px; color:#121118"><b>The key model is int_cycle_daily_progress:</b> it re-derives "how many hours were booked as of date X" for every day of every cycle, recomputed from the full booking history rather than stored as state. Nothing can drift out of sync with reality, and it's what makes daily re-estimation possible.</p>
+  <div style="background:#FFEAF2; border-radius:16px; padding:23.7px 30.4px">
+    <p style="font-size:18.6px; color:#121118"><b>The key model is int_cycle_daily_progress:</b> it re-derives "how many hours were booked as of date X" for every day of every cycle, recomputed from the full booking history rather than stored as state. Nothing can drift out of sync with reality, and it's what makes daily re-estimation possible.</p>
   </div>
-</section></div><div class="num">6 / 13</div></div>
-<div class="slide"><div class="stage"><section id="mart-challenge" style="background:#ffffff; color:#121118; font-family:'Poppins', Arial, sans-serif; padding:128px 128px 160px; display:flex; flex-direction:column; gap:26px">
-  <div style="display:flex; align-items:center; gap:12px">
-    <div style="width:16px; height:16px; background:#FF79AC; border-radius:4px"></div>
-    <p style="font-size:22px; font-weight:600; letter-spacing:2px; text-transform:uppercase; color:#5b5b66">03 — The data model</p>
+</section></div></div><div class="num">6 / 13</div>
+<div class="slide"><div class="stage"><section id="mart-challenge" style="background:#ffffff; color:#121118; font-family:'Poppins', Arial, sans-serif; padding:84.9px 108.1px 84.9px; display:flex; flex-direction:column; gap:25.1px">
+  <div style="display:flex; align-items:center; gap:11.6px">
+    <div style="width:15.4px; height:15.4px; background:#FF79AC; border-radius:4px"></div>
+    <p style="font-size:21.2px; font-weight:600; letter-spacing:1.9px; text-transform:uppercase; color:#5b5b66">03 — The data model</p>
   </div>
-  <h2 style="font-size:54px; font-weight:700; color:#121118">A trade-off I made on purpose: one mart, not three</h2>
-  <p style="font-size:24px; color:#121118">My first draft had three marts models: a "pure" daily fact table, a denormalized dashboard version with student attributes, and a separate table just for "today's" totals. I asked myself whether that was real structure or layering for its own sake.</p>
-  <div style="display:flex; gap:28px">
-    <div style="flex:1; background:#ffffff; border:1px solid #E5E5E8; border-radius:16px; padding:30px; display:flex; flex-direction:column; gap:10px">
-      <h3 style="font-size:24px; font-weight:600; color:#121118">Kept it to one table</h3>
-      <p style="font-size:21px; color:#5b5b66">mart_breakage_daily carries every metric and dimension the dashboard needs — no extra join, no near-duplicate table.</p>
+  <h2 style="font-size:52.1px; font-weight:700; color:#121118">A trade-off I made on purpose: one mart, not three</h2>
+  <p style="font-size:23.2px; color:#121118">My first draft had three marts models: a "pure" daily fact table, a denormalized dashboard version with student attributes, and a separate table just for "today's" totals. I asked myself whether that was real structure or layering for its own sake.</p>
+  <div style="display:flex; gap:27px">
+    <div style="flex:1; background:#ffffff; border:1px solid #E5E5E8; border-radius:16px; padding:29px; display:flex; flex-direction:column; gap:9.7px">
+      <h3 style="font-size:23.2px; font-weight:600; color:#121118">Kept it to one table</h3>
+      <p style="font-size:20.3px; color:#5b5b66">mart_breakage_daily carries every metric and dimension the dashboard needs — no extra join, no near-duplicate table.</p>
     </div>
-    <div style="flex:1; background:#ffffff; border:1px solid #E5E5E8; border-radius:16px; padding:30px; display:flex; flex-direction:column; gap:10px">
-      <h3 style="font-size:24px; font-weight:600; color:#121118">Added is_current_snapshot</h3>
-      <p style="font-size:21px; color:#5b5b66">A flag, true on exactly one row per payment, replaces the separate "current totals" table the dashboard would otherwise need.</p>
+    <div style="flex:1; background:#ffffff; border:1px solid #E5E5E8; border-radius:16px; padding:29px; display:flex; flex-direction:column; gap:9.7px">
+      <h3 style="font-size:23.2px; font-weight:600; color:#121118">Added is_current_snapshot</h3>
+      <p style="font-size:20.3px; color:#5b5b66">A flag, true on exactly one row per payment, replaces the separate "current totals" table the dashboard would otherwise need.</p>
     </div>
-    <div style="flex:1; background:#FF79AC; border-radius:16px; padding:30px; display:flex; flex-direction:column; gap:10px">
-      <h3 style="font-size:24px; font-weight:600; color:#121118">The real cost</h3>
-      <p style="font-size:21px; color:#121118">Forget to filter by that flag and a plain sum() over-counts by about 29× — one row per day of the cycle, not one per payment.</p>
-    </div>
-  </div>
-  <div style="background:#FFEAF2; border-radius:16px; padding:28px 36px">
-    <p style="font-size:22px; color:#121118">I mitigated that risk instead of hiding it: a dedicated test, <b>assert_one_current_snapshot_per_payment</b>, fails the build if any payment ever has zero or more than one "current" row, and the column is documented in schema.yml as exactly what any new chart must filter on.</p>
-  </div>
-</section></div><div class="num">7 / 13</div></div>
-<div class="slide"><div class="stage"><section id="assumptions" style="background:#ffffff; color:#121118; font-family:'Poppins', Arial, sans-serif; padding:128px 128px 160px; display:flex; flex-direction:column; gap:24px">
-  <div style="display:flex; align-items:center; gap:12px">
-    <div style="width:16px; height:16px; background:#FF79AC; border-radius:4px"></div>
-    <p style="font-size:22px; font-weight:600; letter-spacing:2px; text-transform:uppercase; color:#5b5b66">04 — Assumptions & trade-offs</p>
-  </div>
-  <h2 style="font-size:52px; font-weight:700; color:#121118">Decisions I made without a clean answer available</h2>
-  <div style="display:grid; grid-template-columns:1fr 1fr; gap:18px">
-    <div style="background:#ffffff; border:1px solid #E5E5E8; border-radius:14px; padding:22px; display:flex; flex-direction:column; gap:8px">
-      <h3 style="font-size:22px; font-weight:600; color:#121118">Fallback threshold: n ≥ 20</h3>
-      <p style="font-size:19px; color:#5b5b66">Tested by bootstrap-resampling a large segment down to smaller sizes, 2,000 times. At n=20 the estimate can still be off by about 12.5 points — a reasonable floor, not a precision guarantee.</p>
-    </div>
-    <div style="background:#ffffff; border:1px solid #E5E5E8; border-radius:14px; padding:22px; display:flex; flex-direction:column; gap:8px">
-      <h3 style="font-size:22px; font-weight:600; color:#121118">No seasonal adjustment in v1</h3>
-      <p style="font-size:19px; color:#5b5b66">Checked, not assumed: summer cycles book 71.4% of plan vs. 73.4% the rest of the year — a 2-point gap, too small to justify the added complexity.</p>
-    </div>
-    <div style="background:#ffffff; border:1px solid #E5E5E8; border-radius:14px; padding:22px; display:flex; flex-direction:column; gap:8px">
-      <h3 style="font-size:22px; font-weight:600; color:#121118">Cycle length as a variable</h3>
-      <p style="font-size:19px; color:#5b5b66">28 days is a dbt var (cycle_length_days), not a hardcoded number, in every model that uses it — tested live at 30 days before shipping.</p>
-    </div>
-    <div style="background:#ffffff; border:1px solid #E5E5E8; border-radius:14px; padding:22px; display:flex; flex-direction:column; gap:8px">
-      <h3 style="font-size:22px; font-weight:600; color:#121118">try_cast over hard casts</h3>
-      <p style="font-size:19px; color:#5b5b66">One bad row shouldn't fail the whole daily refresh. Trade-off: a cast failure quietly becomes NULL, caught only if the not_null tests are actually watched.</p>
-    </div>
-    <div style="background:#ffffff; border:1px solid #E5E5E8; border-radius:14px; padding:22px; display:flex; flex-direction:column; gap:8px">
-      <h3 style="font-size:22px; font-weight:600; color:#121118">Views vs. tables by layer</h3>
-      <p style="font-size:19px; color:#5b5b66">Staging stays a view (thin, cost-neutral); intermediate and marts are tables — real join and aggregation work paid for once, not on every query.</p>
-    </div>
-    <div style="background:#ffffff; border:1px solid #E5E5E8; border-radius:14px; padding:22px; display:flex; flex-direction:column; gap:8px">
-      <h3 style="font-size:22px; font-weight:600; color:#121118">29 rows kept per closed cycle</h3>
-      <p style="font-size:19px; color:#5b5b66">Not trimmed to the final value — needed to answer "how did the estimate evolve" and to backtest both methods. Cheap at roughly 268K rows total.</p>
+    <div style="flex:1; background:#FF79AC; border-radius:16px; padding:29px; display:flex; flex-direction:column; gap:9.7px">
+      <h3 style="font-size:23.2px; font-weight:600; color:#121118">The real cost</h3>
+      <p style="font-size:20.3px; color:#121118">Forget to filter by that flag and a plain sum() over-counts by about 29× — one row per day of the cycle, not one per payment.</p>
     </div>
   </div>
-</section></div><div class="num">8 / 13</div></div>
-<div class="slide"><div class="stage"><section id="caveats" style="background:#ffffff; color:#121118; font-family:'Poppins', Arial, sans-serif; padding:128px 128px 160px; display:flex; flex-direction:column; gap:24px">
-  <div style="display:flex; align-items:center; gap:12px">
-    <div style="width:16px; height:16px; background:#FF79AC; border-radius:4px"></div>
-    <p style="font-size:22px; font-weight:600; letter-spacing:2px; text-transform:uppercase; color:#5b5b66">04 — Assumptions &amp; trade-offs</p>
+  <div style="background:#FFEAF2; border-radius:16px; padding:27px 34.8px">
+    <p style="font-size:21.2px; color:#121118">I mitigated that risk instead of hiding it: a dedicated test, <b>assert_one_current_snapshot_per_payment</b>, fails the build if any payment ever has zero or more than one "current" row, and the column is documented in schema.yml as exactly what any new chart must filter on.</p>
   </div>
-  <h2 style="font-size:52px; font-weight:700; color:#121118">What I'd warn PayOps about before they trust this</h2>
+</section></div></div><div class="num">7 / 13</div>
+<div class="slide"><div class="stage"><section id="assumptions" style="background:#ffffff; color:#121118; font-family:'Poppins', Arial, sans-serif; padding:77.3px 98.4px 77.3px; display:flex; flex-direction:column; gap:21.1px">
+  <div style="display:flex; align-items:center; gap:10.5px">
+    <div style="width:14.1px; height:14.1px; background:#FF79AC; border-radius:4px"></div>
+    <p style="font-size:19.3px; font-weight:600; letter-spacing:1.8px; text-transform:uppercase; color:#5b5b66">04 — Assumptions & trade-offs</p>
+  </div>
+  <h2 style="font-size:45.7px; font-weight:700; color:#121118">Decisions I made without a clean answer available</h2>
+  <div style="display:grid; grid-template-columns:1fr 1fr; gap:15.8px">
+    <div style="background:#ffffff; border:1px solid #E5E5E8; border-radius:14px; padding:19.3px; display:flex; flex-direction:column; gap:7px">
+      <h3 style="font-size:19.3px; font-weight:600; color:#121118">Fallback threshold: n ≥ 20</h3>
+      <p style="font-size:16.7px; color:#5b5b66">Tested by bootstrap-resampling a large segment down to smaller sizes, 2,000 times. At n=20 the estimate can still be off by about 12.5 points — a reasonable floor, not a precision guarantee.</p>
+    </div>
+    <div style="background:#ffffff; border:1px solid #E5E5E8; border-radius:14px; padding:19.3px; display:flex; flex-direction:column; gap:7px">
+      <h3 style="font-size:19.3px; font-weight:600; color:#121118">No seasonal adjustment in v1</h3>
+      <p style="font-size:16.7px; color:#5b5b66">Checked, not assumed: summer cycles book 71.4% of plan vs. 73.4% the rest of the year — a 2-point gap, too small to justify the added complexity.</p>
+    </div>
+    <div style="background:#ffffff; border:1px solid #E5E5E8; border-radius:14px; padding:19.3px; display:flex; flex-direction:column; gap:7px">
+      <h3 style="font-size:19.3px; font-weight:600; color:#121118">Cycle length as a variable</h3>
+      <p style="font-size:16.7px; color:#5b5b66">28 days is a dbt var (cycle_length_days), not a hardcoded number, in every model that uses it — tested live at 30 days before shipping.</p>
+    </div>
+    <div style="background:#ffffff; border:1px solid #E5E5E8; border-radius:14px; padding:19.3px; display:flex; flex-direction:column; gap:7px">
+      <h3 style="font-size:19.3px; font-weight:600; color:#121118">try_cast over hard casts</h3>
+      <p style="font-size:16.7px; color:#5b5b66">One bad row shouldn't fail the whole daily refresh. Trade-off: a cast failure quietly becomes NULL, caught only if the not_null tests are actually watched.</p>
+    </div>
+    <div style="background:#ffffff; border:1px solid #E5E5E8; border-radius:14px; padding:19.3px; display:flex; flex-direction:column; gap:7px">
+      <h3 style="font-size:19.3px; font-weight:600; color:#121118">Views vs. tables by layer</h3>
+      <p style="font-size:16.7px; color:#5b5b66">Staging stays a view (thin, cost-neutral); intermediate and marts are tables — real join and aggregation work paid for once, not on every query.</p>
+    </div>
+    <div style="background:#ffffff; border:1px solid #E5E5E8; border-radius:14px; padding:19.3px; display:flex; flex-direction:column; gap:7px">
+      <h3 style="font-size:19.3px; font-weight:600; color:#121118">29 rows kept per closed cycle</h3>
+      <p style="font-size:16.7px; color:#5b5b66">Not trimmed to the final value — needed to answer "how did the estimate evolve" and to backtest both methods. Cheap at roughly 268K rows total.</p>
+    </div>
+  </div>
+</section></div></div><div class="num">8 / 13</div>
+<div class="slide"><div class="stage"><section id="caveats" style="background:#ffffff; color:#121118; font-family:'Poppins', Arial, sans-serif; padding:82.1px 104.5px 82.1px; display:flex; flex-direction:column; gap:22.4px">
+  <div style="display:flex; align-items:center; gap:11.2px">
+    <div style="width:14.9px; height:14.9px; background:#FF79AC; border-radius:4px"></div>
+    <p style="font-size:20.5px; font-weight:600; letter-spacing:1.9px; text-transform:uppercase; color:#5b5b66">04 — Assumptions &amp; trade-offs</p>
+  </div>
+  <h2 style="font-size:48.5px; font-weight:700; color:#121118">What I'd warn PayOps about before they trust this</h2>
   <div style="display:flex; flex-direction:column; gap:0">
-    <div style="display:flex; gap:32px; padding:18px 0; border-top:1px solid #E5E5E8">
-      <p style="font-size:21px; color:#121118; font-weight:600; width:400px">Day-28 backtest result</p>
-      <p style="font-size:21px; color:#5b5b66">Is a mechanical artifact of the formula, not a genuine accuracy win — flagged, not hidden inside a clean-looking chart.</p>
+    <div style="display:flex; gap:29.9px; padding:16.8px 0; border-top:1px solid #E5E5E8">
+      <p style="font-size:19.6px; color:#121118; font-weight:600; width:373.3px">Day-28 backtest result</p>
+      <p style="font-size:19.6px; color:#5b5b66">Is a mechanical artifact of the formula, not a genuine accuracy win — flagged, not hidden inside a clean-looking chart.</p>
     </div>
-    <div style="display:flex; gap:32px; padding:18px 0; border-top:1px solid #E5E5E8">
-      <p style="font-size:21px; color:#121118; font-weight:600; width:400px">Small segments stay noisy</p>
-      <p style="font-size:21px; color:#5b5b66">20h + new-student cycles (n=33) get the same estimator as an 8h renewing segment with 1,362 — same formula, much less confidence behind it.</p>
+    <div style="display:flex; gap:29.9px; padding:16.8px 0; border-top:1px solid #E5E5E8">
+      <p style="font-size:19.6px; color:#121118; font-weight:600; width:373.3px">Small segments stay noisy</p>
+      <p style="font-size:19.6px; color:#5b5b66">20h + new-student cycles (n=33) get the same estimator as an 8h renewing segment with 1,362 — same formula, much less confidence behind it.</p>
     </div>
-    <div style="display:flex; gap:32px; padding:18px 0; border-top:1px solid #E5E5E8">
-      <p style="font-size:21px; color:#121118; font-weight:600; width:400px">is_current_snapshot is a convention</p>
-      <p style="font-size:21px; color:#5b5b66">A dbt test catches a broken flag inside the project. A BI tool built without reading the model docs could still double-count.</p>
+    <div style="display:flex; gap:29.9px; padding:16.8px 0; border-top:1px solid #E5E5E8">
+      <p style="font-size:19.6px; color:#121118; font-weight:600; width:373.3px">is_current_snapshot is a convention</p>
+      <p style="font-size:19.6px; color:#5b5b66">A dbt test catches a broken flag inside the project. A BI tool built without reading the model docs could still double-count.</p>
     </div>
-    <div style="display:flex; gap:32px; padding:18px 0; border-top:1px solid #E5E5E8">
-      <p style="font-size:21px; color:#121118; font-weight:600; width:400px">No seasonal signal here isn't proof there's none</p>
-      <p style="font-size:21px; color:#5b5b66">This dataset is close to flat across summer. Real Preply data may not be — worth re-checking before trusting v1 long-term.</p>
+    <div style="display:flex; gap:29.9px; padding:16.8px 0; border-top:1px solid #E5E5E8">
+      <p style="font-size:19.6px; color:#121118; font-weight:600; width:373.3px">No seasonal signal here isn't proof there's none</p>
+      <p style="font-size:19.6px; color:#5b5b66">This dataset is close to flat across summer. Real Preply data may not be — worth re-checking before trusting v1 long-term.</p>
     </div>
-    <div style="display:flex; gap:32px; padding:18px 0; border-top:1px solid #E5E5E8; border-bottom:1px solid #E5E5E8">
-      <p style="font-size:21px; color:#121118; font-weight:600; width:400px">Every open-cycle number is provisional</p>
-      <p style="font-size:21px; color:#5b5b66">By construction — it will keep changing until the cycle closes. It should never carry the same confidence as a closed cycle's actual.</p>
+    <div style="display:flex; gap:29.9px; padding:16.8px 0; border-top:1px solid #E5E5E8; border-bottom:1px solid #E5E5E8">
+      <p style="font-size:19.6px; color:#121118; font-weight:600; width:373.3px">Every open-cycle number is provisional</p>
+      <p style="font-size:19.6px; color:#5b5b66">By construction — it will keep changing until the cycle closes. It should never carry the same confidence as a closed cycle's actual.</p>
     </div>
   </div>
-</section></div><div class="num">9 / 13</div></div>
-<div class="slide"><div class="stage"><section id="dashboard" style="background:#ffffff; color:#121118; font-family:'Poppins', Arial, sans-serif; padding:128px 128px 160px; display:flex; flex-direction:column; gap:24px">
+</section></div></div><div class="num">9 / 13</div>
+<div class="slide"><div class="stage"><section id="dashboard" style="background:#ffffff; color:#121118; font-family:'Poppins', Arial, sans-serif; padding:88px 112px 88px; display:flex; flex-direction:column; gap:24px">
   <div style="display:flex; align-items:center; gap:12px">
     <div style="width:16px; height:16px; background:#FF79AC; border-radius:4px"></div>
     <p style="font-size:22px; font-weight:600; letter-spacing:2px; text-transform:uppercase; color:#5b5b66">05 — The dashboard</p>
@@ -318,37 +315,37 @@
       <p style="font-size:18px; color:#121118">Renewal rate falls from 82% to 19% as breakage rises — high breakage predicts churn more than it means free money.</p>
     </div>
   </div>
-</section></div><div class="num">10 / 13</div></div>
-<div class="slide"><div class="stage"><section id="next" style="background:#ffffff; color:#121118; font-family:'Poppins', Arial, sans-serif; padding:128px 128px 160px; display:flex; flex-direction:column; gap:24px">
-  <div style="display:flex; align-items:center; gap:12px">
-    <div style="width:16px; height:16px; background:#FF79AC; border-radius:4px"></div>
-    <p style="font-size:22px; font-weight:600; letter-spacing:2px; text-transform:uppercase; color:#5b5b66">05 — What's next</p>
+</section></div></div><div class="num">10 / 13</div>
+<div class="slide"><div class="stage"><section id="next" style="background:#ffffff; color:#121118; font-family:'Poppins', Arial, sans-serif; padding:82.9px 105.5px 82.9px; display:flex; flex-direction:column; gap:22.6px">
+  <div style="display:flex; align-items:center; gap:11.3px">
+    <div style="width:15.1px; height:15.1px; background:#FF79AC; border-radius:4px"></div>
+    <p style="font-size:20.7px; font-weight:600; letter-spacing:1.9px; text-transform:uppercase; color:#5b5b66">05 — What's next</p>
   </div>
-  <h2 style="font-size:56px; font-weight:700; color:#121118">If I had another week</h2>
+  <h2 style="font-size:52.8px; font-weight:700; color:#121118">If I had another week</h2>
   <div style="display:flex; flex-direction:column; gap:0">
-    <div style="display:flex; align-items:center; gap:28px; padding:16px 0; border-top:1px solid #E5E5E8">
-      <div style="width:44px; height:44px; background:#FFEAF2; border-radius:100px; display:flex; align-items:center; justify-content:center"><p style="font-size:20px; font-weight:700; color:#121118">1</p></div>
-      <p style="font-size:22px; color:#121118">Validate and ship an adaptive blend of linear + segment, weighted toward linear near cycle-end — with its own bootstrap-style validation, not a hand-picked formula.</p>
+    <div style="display:flex; align-items:center; gap:26.4px; padding:15.1px 0; border-top:1px solid #E5E5E8">
+      <div style="width:41.5px; height:41.5px; background:#FFEAF2; border-radius:100px; display:flex; align-items:center; justify-content:center"><p style="font-size:18.8px; font-weight:700; color:#121118">1</p></div>
+      <p style="font-size:20.7px; color:#121118">Validate and ship an adaptive blend of linear + segment, weighted toward linear near cycle-end — with its own bootstrap-style validation, not a hand-picked formula.</p>
     </div>
-    <div style="display:flex; align-items:center; gap:28px; padding:16px 0; border-top:1px solid #E5E5E8">
-      <div style="width:44px; height:44px; background:#FFEAF2; border-radius:100px; display:flex; align-items:center; justify-content:center"><p style="font-size:20px; font-weight:700; color:#121118">2</p></div>
-      <p style="font-size:22px; color:#121118">Turn the backtest into a standing model — MAE by segment, recomputed automatically every time a cohort closes, not a one-off analysis.</p>
+    <div style="display:flex; align-items:center; gap:26.4px; padding:15.1px 0; border-top:1px solid #E5E5E8">
+      <div style="width:41.5px; height:41.5px; background:#FFEAF2; border-radius:100px; display:flex; align-items:center; justify-content:center"><p style="font-size:18.8px; font-weight:700; color:#121118">2</p></div>
+      <p style="font-size:20.7px; color:#121118">Turn the backtest into a standing model — MAE by segment, recomputed automatically every time a cohort closes, not a one-off analysis.</p>
     </div>
-    <div style="display:flex; align-items:center; gap:28px; padding:16px 0; border-top:1px solid #E5E5E8">
-      <div style="width:44px; height:44px; background:#FFEAF2; border-radius:100px; display:flex; align-items:center; justify-content:center"><p style="font-size:20px; font-weight:700; color:#121118">3</p></div>
-      <p style="font-size:22px; color:#121118">Add a quarantine table for staging cast failures, instead of today's silent-NULL fallback.</p>
+    <div style="display:flex; align-items:center; gap:26.4px; padding:15.1px 0; border-top:1px solid #E5E5E8">
+      <div style="width:41.5px; height:41.5px; background:#FFEAF2; border-radius:100px; display:flex; align-items:center; justify-content:center"><p style="font-size:18.8px; font-weight:700; color:#121118">3</p></div>
+      <p style="font-size:20.7px; color:#121118">Add a quarantine table for staging cast failures, instead of today's silent-NULL fallback.</p>
     </div>
-    <div style="display:flex; align-items:center; gap:28px; padding:16px 0; border-top:1px solid #E5E5E8">
-      <div style="width:44px; height:44px; background:#FFEAF2; border-radius:100px; display:flex; align-items:center; justify-content:center"><p style="font-size:20px; font-weight:700; color:#121118">4</p></div>
-      <p style="font-size:22px; color:#121118">Extend the grain to answer "how much breakage lands tomorrow" directly — the model already has each open payment's real close date, as the dashboard's close-calendar view shows.</p>
+    <div style="display:flex; align-items:center; gap:26.4px; padding:15.1px 0; border-top:1px solid #E5E5E8">
+      <div style="width:41.5px; height:41.5px; background:#FFEAF2; border-radius:100px; display:flex; align-items:center; justify-content:center"><p style="font-size:18.8px; font-weight:700; color:#121118">4</p></div>
+      <p style="font-size:20.7px; color:#121118">Extend the grain to answer "how much breakage lands tomorrow" directly — the model already has each open payment's real close date, as the dashboard's close-calendar view shows.</p>
     </div>
-    <div style="display:flex; align-items:center; gap:28px; padding:16px 0; border-top:1px solid #E5E5E8; border-bottom:1px solid #E5E5E8">
-      <div style="width:44px; height:44px; background:#FFEAF2; border-radius:100px; display:flex; align-items:center; justify-content:center"><p style="font-size:20px; font-weight:700; color:#121118">5</p></div>
-      <p style="font-size:22px; color:#121118">Hand language and learner-intent (first_subject, persona) to the Customer Insight team as a churn-risk hypothesis — real signal, but outside PayOps' revenue scope.</p>
+    <div style="display:flex; align-items:center; gap:26.4px; padding:15.1px 0; border-top:1px solid #E5E5E8; border-bottom:1px solid #E5E5E8">
+      <div style="width:41.5px; height:41.5px; background:#FFEAF2; border-radius:100px; display:flex; align-items:center; justify-content:center"><p style="font-size:18.8px; font-weight:700; color:#121118">5</p></div>
+      <p style="font-size:20.7px; color:#121118">Hand language and learner-intent (first_subject, persona) to the Customer Insight team as a churn-risk hypothesis — real signal, but outside PayOps' revenue scope.</p>
     </div>
   </div>
-</section></div><div class="num">11 / 13</div></div>
-<div class="slide"><div class="stage"><section id="ai-usage" style="background:#ffffff; color:#121118; font-family:'Poppins', Arial, sans-serif; padding:128px 128px 160px; display:flex; flex-direction:column; gap:24px">
+</section></div></div><div class="num">11 / 13</div>
+<div class="slide"><div class="stage"><section id="ai-usage" style="background:#ffffff; color:#121118; font-family:'Poppins', Arial, sans-serif; padding:88px 112px 88px; display:flex; flex-direction:column; gap:24px">
   <div style="display:flex; align-items:center; gap:12px">
     <div style="width:16px; height:16px; background:#FF79AC; border-radius:4px"></div>
     <p style="font-size:22px; font-weight:600; letter-spacing:2px; text-transform:uppercase; color:#5b5b66">How I used AI</p>
@@ -381,29 +378,30 @@
       </ul>
     </div>
   </div>
-</section></div><div class="num">12 / 13</div></div>
-<div class="slide"><div class="stage"><section id="closing" style="background:#ffffff; color:#121118; font-family:'Poppins', Arial, sans-serif; padding:128px; display:flex; flex-direction:column; justify-content:center; gap:24px">
+</section></div></div><div class="num">12 / 13</div>
+<div class="slide"><div class="stage"><section id="closing" style="background:#ffffff; color:#121118; font-family:'Poppins', Arial, sans-serif; padding:88px 112px; display:flex; flex-direction:column; justify-content:center; gap:24px">
   <h2 style="font-size:76px; font-weight:700; color:#121118">Thank you</h2>
   <p style="font-size:30px; color:#5b5b66">Happy to walk through any part of the model, the backtest, or the dashboard live.</p>
   <div style="background:#FF79AC; border-radius:100px; padding:14px 28px">
     <p style="font-size:22px; font-weight:600; color:#121118">github.com/alejandrorial/preply — dbt project, plus breakage_dashboard.html at the repo root</p>
   </div>
-  <p style="position:absolute; left:128px; bottom:64px; font-size:22px; color:#5b5b66">Alejandro Rial · alejandrorialvarela@yahoo.es</p>
-</section></div><div class="num">13 / 13</div></div>
+  <p style="position:absolute; left:112px; bottom:64px; font-size:22px; color:#5b5b66">Alejandro Rial · alejandrorialvarela@yahoo.es</p>
+</section></div></div><div class="num">13 / 13</div>
 </div>
 <script>
-  // Scale every 1920px slide down to the column width, and collapse the
-  // leftover vertical space the untransformed height would otherwise leave.
   function fit() {
     document.querySelectorAll('.slide').forEach(function (slide) {
       var stage = slide.querySelector('.stage');
       var scale = slide.clientWidth / 1920;
       stage.style.transform = 'scale(' + scale + ')';
-      stage.style.marginBottom = (1080 * scale - 1080) + 'px';
+      slide.style.height = Math.ceil(stage.scrollHeight * scale) + 'px';
     });
   }
   fit();
   window.addEventListener('resize', fit);
+  // Re-fit once webfonts have swapped in, in case metrics shift the layout.
+  if (document.fonts && document.fonts.ready) { document.fonts.ready.then(fit); }
+  window.addEventListener('load', fit);
 </script>
 </body>
 </html>
