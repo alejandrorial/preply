@@ -1,8 +1,8 @@
 {{ config(severity='warn') }}
 
 -- Both figures are bounded at 0 by construction (least()/greatest() clamps
--- in fct_payment_breakage_daily) — this is a sanity check on that
--- invariant holding, not a business rule on its own.
+-- in mart_breakage_daily) — this is a sanity check on that invariant
+-- holding, not a business rule on its own.
 select
     payment_id
     , snapshot_date

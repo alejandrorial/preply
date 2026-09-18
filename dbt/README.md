@@ -33,6 +33,10 @@ dbt run     # builds staging -> intermediate -> marts
 dbt test    # runs the tests
 ```
 
+This runs at the dataset's own point in time (2026-04-17) by default — see
+below — so it reproduces the case as submitted, with 8,846 closed cycles and
+849 still open and being estimated.
+
 **Note**: `dev.duckdb` uses an exclusive lock. If you have it open in VS
 Code's DuckDB extension (or another client), close that connection before
 running `dbt seed`/`dbt run`, or you'll get `IO Error: Could not set lock on
@@ -80,16 +84,33 @@ silently exclude almost every already-closed payment). Enforced by
 ## Point in time ("today")
 
 The project never assumes `current_date` directly in a model — everything
-goes through the `as_of_date()` macro (`macros/as_of_date.sql`):
+goes through the `as_of_date()` macro (`macros/as_of_date.sql`), driven by
+the `as_of_date` var:
 
-- No override: uses `current_date` (normal production behavior).
-- To reproduce the case study with the dataset's real `AS_OF_DATE`
-  (2026-04-17, the last day it covers), or for a backfill/debugging a
-  specific day:
+- **Default: `2026-04-17`**, the last day the dataset covers — the case's
+  "assume today is the last day covered by the dataset". This is deliberately
+  the default rather than `current_date`: this dataset is a frozen snapshot,
+  so a real current date leaves every cycle already closed, zero payments
+  open, and nothing to estimate — the entire point of the model — without
+  a single test failing to tell you.
+- **Production behavior** (each daily run pins itself to the day it runs):
 
   ```bash
-  dbt run --vars '{as_of_date: 2026-04-17}'
+  dbt build --vars '{as_of_date: null}'
   ```
+
+- **Backfill / debugging a specific day**:
+
+  ```bash
+  dbt build --vars '{as_of_date: 2026-01-15}'
+  ```
+
+  Note that a backfill legitimately sees fewer payments: any payment whose
+  cycle hadn't started by that date has no rows yet. The
+  `assert_one_current_snapshot_per_payment` test accounts for this — it
+  checks every payment that *had* started by the run's point in time, so it
+  catches a payment silently dropping out of the mart without raising false
+  alarms on payments that simply didn't exist yet.
 
 ## Schemas
 

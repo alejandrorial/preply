@@ -15,11 +15,18 @@ clean-targets:
   - "dbt_packages"
 
 vars:
-  # Point in time the project treats as "today". null => uses current_date
-  # (production behavior). Pass it explicitly to reproduce the case study
-  # with the dataset's frozen AS_OF_DATE, or for backfills/debugging:
-  #   dbt run --vars '{as_of_date: 2026-04-17}'
-  as_of_date: null
+  # Point in time the project treats as "today", per the case's instruction
+  # to assume today is the last day covered by the dataset. Defaulting to
+  # the dataset's own AS_OF_DATE (rather than current_date) is what makes
+  # `dbt build` do something meaningful out of the box: with a real
+  # current_date, every cycle in this fixed dataset is long closed, so there
+  # would be zero open payments and nothing left to estimate — the whole
+  # point of the project — and no test would flag it.
+  # In production this would be null instead, so each daily run pins itself
+  # to the day it runs:
+  #   dbt build --vars '{as_of_date: null}'   # => current_date
+  #   dbt build --vars '{as_of_date: 2026-01-15}'   # => a backfill
+  as_of_date: '2026-04-17'
 
   # Lookback window for the per-segment booking curves. null => uses the
   # full history of closed cycles (current decision). An integer number of

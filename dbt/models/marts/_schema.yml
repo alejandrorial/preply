@@ -59,6 +59,15 @@ models:
           business has decided to trust more (method_used). Nobody reading
           this mart needs to know which estimate column is "the good one"
           for a given row — this column already made that call.
+        data_tests:
+          # A null here wouldn't fail anything loudly — it would just drop
+          # out of every sum() and quietly understate revenue. Reachable if
+          # a segment ever has enough history to be chosen but no closing-day
+          # curve row to project with (never happens on this dataset; still
+          # worth a guard on the one column everything downstream totals).
+          - not_null:
+              config:
+                severity: warn
       - name: commission_revenue_usd
         description: >
           Preply's other, steadier source of revenue on this payment: 20%
