@@ -78,8 +78,6 @@
   .kpi .value.actual{color:var(--actual);}
   .kpi .value.estimate{color:var(--estimate);}
   .kpi .sub{font-size:12px; color:var(--ink-soft);}
-  .split-bar{height:8px; border-radius:100px; overflow:hidden; display:flex; background:var(--surface-2); margin-top:2px;}
-  .split-bar .a{background:var(--actual);} .split-bar .e{background:var(--estimate-fill);}
   .legend-row{display:flex; gap:16px; font-size:12px; color:var(--ink-soft); margin-top:10px; flex-wrap:wrap; align-items:center;}
   .legend-row .dot{display:inline-block; width:8px; height:8px; border-radius:50%; margin-right:5px;}
   .dot.actual{background:var(--actual);} .dot.estimate{background:var(--estimate-fill);} .dot.accent{background:var(--accent);}
@@ -186,13 +184,6 @@
         <span class="label">Breakage rate</span>
         <span class="value estimate" id="kpiRate">—</span>
         <span class="sub">over this month's plan value, actual+estimated</span>
-      </div>
-    </div>
-    <div class="panel" style="margin-top:12px;">
-      <div class="split-bar" id="splitBar" style="max-width:420px;"></div>
-      <div class="legend-row">
-        <span><span class="dot actual"></span>Actual (known)</span>
-        <span><span class="dot estimate"></span>Estimated (recalibrated daily)</span>
       </div>
     </div>
   </section>
@@ -373,13 +364,6 @@
   document.getElementById('kpiEstimateSub').textContent = fmtN(k.open_n) + ' still open, closing this month';
   document.getElementById('kpiGuaranteed').textContent = fmtUsd0(k.commission_total);
   document.getElementById('kpiRate').textContent = fmtPct(k.overall_breakage_rate);
-
-  var totalBk = expected;
-  var aPct = totalBk ? (k.actual_breakage_total / totalBk * 100) : 0;
-  var splitBar = document.getElementById('splitBar');
-  var aDiv = document.createElement('div'); aDiv.className = 'a'; aDiv.style.width = aPct.toFixed(1) + '%';
-  var eDiv = document.createElement('div'); eDiv.className = 'e'; eDiv.style.width = (100 - aPct).toFixed(1) + '%';
-  splitBar.appendChild(aDiv); splitBar.appendChild(eDiv);
 
   // ---------- Payment monitor table ----------
   (function(){
